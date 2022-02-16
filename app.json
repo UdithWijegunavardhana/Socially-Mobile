@@ -1,14 +1,12 @@
 {
   "expo": {
-    "name": "Socially01",
-    "slug": "Socially01",
+    "name": "Simple Login Template",
+    "slug": "simple-login-template",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "icon": "./src/assets/icon.png",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./src/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,12 +21,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./src/assets/favicon.png"
     }
   }
 }
