@@ -1,6 +1,5 @@
-import React, { useState , useRef} from 'react'
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
-import { Text } from 'react-native-paper'
+import React, { useState } from 'react'
+import { StyleSheet } from 'react-native'
 import Background from '../components/Background'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
@@ -9,19 +8,50 @@ import { phoneNumberValidator } from '../helpers/PhoneNumberValidator'
 
 export default function LoginScreen({ navigation }) {
   const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
-  
+
   const onLoginPressed = () => {
     const phoneNumberError = phoneNumberValidator(phoneNumber.value)
     if (phoneNumberError) {
       setPhoneNumber({ ...phoneNumber, error: phoneNumberError })
       return
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'OTPScreen' }],
+    //API connection
+
+    var axios = require('axios')
+    var data = JSON.stringify({
+      phoneNumber: phoneNumber.value,
     })
+
+    var config = {
+      method: 'post',
+      url: 'http://10.0.2.2:3000/auth/phone',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data,
+    }
+
+    axios(config)
+      .then(function (response) {
+        let IsnewUser = JSON.stringify(response.data.IsNewUser)
+        console.log(JSON.stringify(response.data.IsNewUser))
+        if (IsnewUser === 'true') {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'RegisterScreen' }],
+            param: phoneNumber.value,
+          })
+        } else {
+          navigation.navigate('OTPScreen', {
+            phoneNumber: phoneNumber.value,
+          })
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
   }
-  
+
   return (
     <Background>
       <TextInput
@@ -37,13 +67,6 @@ export default function LoginScreen({ navigation }) {
       <Button mode="contained" onPress={onLoginPressed}>
         Get OTP
       </Button>
-
-      <View style={styles.row}>
-        {/* <Text>Don’t have an account? </Text> */}
-        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
-          <Text style={styles.link}>New User?</Text>
-        </TouchableOpacity>
-      </View>
     </Background>
   )
 }
@@ -66,5 +89,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: theme.colors.primary,
   },
-  
 })

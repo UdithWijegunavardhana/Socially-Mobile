@@ -46,7 +46,7 @@ const advertisements = [
   },
 ]
 
-const ViewAdsScreen = () => {
+export default function ViewAdsScreen({ navigation }) {
   const [data, setData] = useState(advertisements)
   const [searchQuery, setSearchQuery] = useState('')
   const [visible, setVisible] = useState(false)
@@ -157,5 +157,3 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 })
-
-export default ViewAdsScreen
