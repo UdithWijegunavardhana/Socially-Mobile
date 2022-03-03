@@ -1,10 +1,10 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { LoginScreen, RegisterScreen, OTPScreen } from '../screens'
-import Dashboard from './../screens/Dashboard'
+import ViewAdsScreen from '../screens/ViewAdsScreen'
 
 const Stack = createStackNavigator()
-const AuthNavigator = () => (
+const AuthStack = () => (
   <Stack.Navigator
     initialRouteName="LoginScreen"
     screenOptions={{
@@ -30,11 +30,11 @@ const AuthNavigator = () => (
       options={{ title: 'OTP' }}
     />
     <Stack.Screen
-      name="Dashboard"
-      component={Dashboard}
-      options={{ title: 'Home' }}
+      name="ViewAdsScreen"
+      component={ViewAdsScreen}
+      options={{ title: 'Ads' }}
     />
   </Stack.Navigator>
 )
 
-export default AuthNavigator
+export default AuthStack

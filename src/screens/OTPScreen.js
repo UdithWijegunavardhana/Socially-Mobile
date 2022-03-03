@@ -1,47 +1,88 @@
 import React, { useState, useRef, useEffect, Component } from 'react'
-import { View, TextInput, StyleSheet, Text, Alert } from 'react-native'
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Text,
+  Alert,
+  TouchableOpacity,
+} from 'react-native'
 import { Button as PaperButton } from 'react-native-paper'
 import OTPTextView from 'react-native-otp-textinput'
 import Background from '../components/Background'
+import { theme } from '../core/theme'
 
-export class OTPScreen extends Component {
-  state = {
-    otpInput: '',
-    inputText: '',
-  }
-  alertText = () => {
-    const { otpInput = '' } = this.state
+export default function OTPScreen({ route, navigation }) {
+  const [otpInput, setOtpInput] = useState('')
+  const [err, setErr] = useState('')
+
+  const { phoneNumber } = route.params
+
+  const handleOtpVerify = () => {
     if (otpInput) {
-      Alert.alert(otpInput)
+      var axios = require('axios')
+      var data = JSON.stringify({
+        phoneNumber: phoneNumber,
+        otp: otpInput,
+      })
+
+      var config = {
+        method: 'post',
+        url: 'http://10.0.2.2:3000/auth/otp',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: data,
+      }
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data.phoneNumber))
+          let responseNumber = response.data.phoneNumber
+          if (responseNumber === phoneNumber) {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'ViewAdsScreen' }],
+            })
+          }
+        })
+        .catch(function (error) {
+          setErr(error)
+        })
     }
   }
-  clear = () => {
+  const clear = () => {
     this.input1.clear()
   }
-  updateOtpText = () => {
+  const updateOtpText = () => {
     this.input1.setValue(this.state.inputText)
   }
 
-  render() {
-    return (
+  return (
+    <Background>
       <View style={styles.container}>
         <Text style={styles.instructions}>Verify Your Phone</Text>
         <Text style={styles.textInputContainer}>
           Please enter the 4 digit code sent to
         </Text>
-        <Text>+94 773456234</Text>
+        <Text>{phoneNumber}</Text>
 
         <OTPTextView
-          ref={(e) => (this.input1 = e)}
           containerStyle={styles.textInputContainer}
-          handleTextChange={(text) => this.setState({ otpInput: text })}
-          inputCount={4}
-          keyboardType="numeric"
+          handleTextChange={(text) => setOtpInput(text)}
+          inputCount={6}
+          keyboardType="default"
         />
-
-        <PaperButton mode="outlined" onPress={this.alertText} uppercase={false}>
-          Verify
-        </PaperButton>
+        <Text style={styles.errMessage}>{err}</Text>
+        <TouchableOpacity>
+          <PaperButton
+            mode="outlined"
+            onPress={handleOtpVerify}
+            uppercase={false}
+          >
+            Verify
+          </PaperButton>
+        </TouchableOpacity>
 
         <View style={styles.buttonWrapper}>
           <Text style={styles.textNearButton}> Didn't receive a code ? </Text>
@@ -50,48 +91,49 @@ export class OTPScreen extends Component {
           </PaperButton>
         </View>
       </View>
-    )
-  }
-}
-
-export default function verify({ navigation }) {
-  return (
-    <Background>
-      <OTPScreen />
-      <PaperButton
-        style={styles.wrongNumButton}
-        mode="text"
-        uppercase={false}
-        onPress={() => navigation.navigate('LoginScreen')}
-        // onPress={() =>
-        //   navigation.reset({
-        //     index: 0,
-        //     routes: [{ name: 'LoginScreen' }],
-        //   })
-        // }
-      >
-        Wrong number
-      </PaperButton>
-      <PaperButton
-        style={styles.verifyButton}
-        mode="contained"
-        // onPress={() => navigation.navigate('Dashboard')}
-        // onPress={() =>
-        //   navigation.reset({
-        //     index: 0,
-        //     routes: [{ name: 'Dashboard' }],
-        //   })
-        // }
-      >
-        Continue
-      </PaperButton>
     </Background>
   )
 }
+// export default function verify({ navigation }) {
+//   const { phoneNumber } = route.params
+//   return (
+//     <Background>
+//       <OTPScreen />
+//       <PaperButton
+//         style={styles.wrongNumButton}
+//         mode="text"
+//         uppercase={false}
+//         onPress={() => navigation.navigate('LoginScreen')}
+//         // onPress={() =>
+//         //   navigation.reset({
+//         //     index: 0,
+//         //     routes: [{ name: 'LoginScreen' }],
+//         //   })
+//         // }
+//       >
+//         Wrong number
+//         {phoneNumber}
+//       </PaperButton>
+//       <PaperButton
+//         style={styles.verifyButton}
+//         mode="contained"
+//         // onPress={() => navigation.navigate('Dashboard')}
+//         // onPress={() =>
+//         //   navigation.reset({
+//         //     index: 0,
+//         //     routes: [{ name: 'Dashboard' }],
+//         //   })
+//         // }
+//       >
+//         Continue
+//       </PaperButton>
+//     </Background>
+//   )
+// }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.35,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 5,
@@ -125,5 +167,8 @@ const styles = StyleSheet.create({
   wrongNumButton: {
     width: '80%',
     marginTop: 20,
+  },
+  errMessage: {
+    color: theme.colors.error,
   },
 })

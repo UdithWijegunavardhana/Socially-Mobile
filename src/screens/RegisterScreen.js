@@ -8,6 +8,7 @@ import TextInput from '../components/TextInput'
 import { theme } from '../core/theme'
 import { phoneNumberValidator } from '../helpers/PhoneNumberValidator'
 import { nameValidator } from '../helpers/nameValidator'
+import axios from 'axios'
 
 export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
@@ -21,6 +22,31 @@ export default function RegisterScreen({ navigation }) {
       setPhoneNumber({ ...phoneNumber, error: phoneNumberError })
       return
     }
+
+    //API connection
+    var axios = require('axios')
+    var data = JSON.stringify({
+      userName: 'AKila kumara',
+      mobileNumber: '0723244419',
+    })
+
+    var config = {
+      method: 'post',
+      url: 'http://localhost:3000/auth/publisherRegister',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data,
+    }
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data))
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+
     navigation.reset({
       index: 0,
       routes: [{ name: 'OTPScreen' }],
@@ -61,7 +87,6 @@ export default function RegisterScreen({ navigation }) {
           <Text style={styles.link}>Login</Text>
         </TouchableOpacity>
       </View>
-
     </Background>
   )
 }
