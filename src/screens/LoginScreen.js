@@ -16,7 +16,6 @@ export default function LoginScreen({ navigation }) {
       return
     }
     //API connection
-
     var axios = require('axios')
     var data = JSON.stringify({
       phoneNumber: phoneNumber.value,
@@ -24,7 +23,7 @@ export default function LoginScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://10.0.2.2:3000/auth/phone',
+      url: 'http://localhost:3000/auth/phone',
       headers: {
         'Content-Type': 'application/json',
       },

@@ -12,14 +12,14 @@ import axios from 'axios'
 
 export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
-  const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
+  // const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
 
   const onSignUpPressed = () => {
     const nameError = nameValidator(name.value)
-    const phoneNumberError = phoneNumberValidator(phoneNumber.value)
-    if (phoneNumberError || nameError) {
+    // const phoneNumberError = phoneNumberValidator(phoneNumber.value)
+    if (nameError) {
       setName({ ...name, error: nameError })
-      setPhoneNumber({ ...phoneNumber, error: phoneNumberError })
+      // setPhoneNumber({ ...phoneNumber, error: phoneNumberError })
       return
     }
 
@@ -64,7 +64,7 @@ export default function RegisterScreen({ navigation }) {
         error={!!name.error}
         errorText={name.error}
       />
-      <TextInput
+      {/* <TextInput
         label="Phone"
         returnKeyType="done"
         value={phoneNumber.value}
@@ -72,7 +72,7 @@ export default function RegisterScreen({ navigation }) {
         error={!!phoneNumber.error}
         errorText={phoneNumber.error}
         keyboardType="numeric"
-      />
+      /> */}
       <Button
         mode="contained"
         onPress={onSignUpPressed}
