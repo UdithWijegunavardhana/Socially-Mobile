@@ -28,7 +28,7 @@ export default function OTPScreen({ route, navigation }) {
 
       var config = {
         method: 'post',
-        url: 'http://10.0.2.2:3000/auth/otp',
+        url: 'http://localhost:3000/auth/otp',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -63,7 +63,7 @@ export default function OTPScreen({ route, navigation }) {
       <View style={styles.container}>
         <Text style={styles.instructions}>Verify Your Phone</Text>
         <Text style={styles.textInputContainer}>
-          Please enter the 4 digit code sent to
+          Please enter the 6 digit code sent to
         </Text>
         <Text>{phoneNumber}</Text>
 
