@@ -4,8 +4,14 @@ import { Card, Title, Paragraph } from 'react-native-paper'
 import Button from './Button'
 import { theme } from './../core/theme'
 import Apptext from './AppText'
+// import { ShareService } from './../services/ShareService'
+import { onShare } from './../services/ShareService'
 
 const AppCard = ({ image, title, description, paymentInformation }) => {
+  const onShared = () => {
+    const url = 'https://youtu.be/D6xkbGLQesk'
+    onShare('My App', 'Hello check this amazing discount!', url)
+  }
   return (
     <Card style={styles.container} mode="elevated">
       <Card.Cover source={image} style={styles.image} />
@@ -27,7 +33,7 @@ const AppCard = ({ image, title, description, paymentInformation }) => {
           uppercase={false}
           style={styles.shareButton}
           labelStyle={{ fontSize: 22, lineHeight: 15 }}
-          onPress={() => console.log('Advertisement Shared!')}
+          onPress={onShared}
         >
           <Text style={{ fontSize: 14 }}>Share</Text>
         </Button>
