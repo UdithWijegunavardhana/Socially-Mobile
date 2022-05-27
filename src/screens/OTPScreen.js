@@ -19,44 +19,47 @@ export default function OTPScreen({ route, navigation }) {
   const { phoneNumber } = route.params
 
   const handleOtpVerify = () => {
-    if (otpInput) {
-      var axios = require('axios')
-      var data = JSON.stringify({
-        phoneNumber: phoneNumber,
-        otp: otpInput,
-      })
+    var axios = require('axios')
+    var data = JSON.stringify({
+      phoneNumber: phoneNumber,
+      otp: otpInput,
+    })
 
-      var config = {
-        method: 'post',
-        url: 'http://localhost:3000/auth/otp',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: data,
-      }
-
-      axios(config)
-        .then(function (response) {
-          console.log(JSON.stringify(response.data.phoneNumber))
-          let responseNumber = response.data.phoneNumber
-          if (responseNumber === phoneNumber) {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'ViewAdsScreen' }],
-            })
-          }
-        })
-        .catch(function (error) {
-          setErr(error)
-        })
+    var config = {
+      method: 'post',
+      url: 'http://10.0.2.2:3000/auth/otp',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data,
     }
+
+    axios(config)
+      .then(function (response) {
+        let responseNumber = response.data.phoneNumber
+        let isNewUser = response.data.isNewUser
+        console.log(isNewUser)
+        if (responseNumber) {
+          if (isNewUser === true) {
+            navigation.navigate('RegisterScreen', {
+              phoneNumber: phoneNumber,
+            })
+          } else {
+            // navigation.navigate('ViewAdsScreen')
+            console.log('navigate to ads screen')
+          }
+        }
+      })
+      .catch(function (error) {
+        setErr(error)
+      })
   }
-  const clear = () => {
-    this.input1.clear()
-  }
-  const updateOtpText = () => {
-    this.input1.setValue(this.state.inputText)
-  }
+  // const clear = () => {
+  //   this.input1.clear()
+  // }
+  // const updateOtpText = () => {
+  //   this.input1.setValue(this.state.inputText)
+  // }
 
   return (
     <Background>

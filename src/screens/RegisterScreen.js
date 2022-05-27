@@ -6,33 +6,30 @@ import Header from '../components/Header'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
 import { theme } from '../core/theme'
-import { phoneNumberValidator } from '../helpers/PhoneNumberValidator'
 import { nameValidator } from '../helpers/nameValidator'
-import axios from 'axios'
+import OTPScreen from './OTPScreen'
 
-export default function RegisterScreen({ navigation }) {
+export default function RegisterScreen({ route, navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
-  // const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
 
-  const onSignUpPressed = () => {
+  const onGetOtpPressed = () => {
     const nameError = nameValidator(name.value)
-    // const phoneNumberError = phoneNumberValidator(phoneNumber.value)
     if (nameError) {
       setName({ ...name, error: nameError })
-      // setPhoneNumber({ ...phoneNumber, error: phoneNumberError })
       return
     }
-
+    const { phoneNumber } = route.params
+    console.log(phoneNumber)
     //API connection
     var axios = require('axios')
     var data = JSON.stringify({
-      userName: 'AKila kumara',
-      mobileNumber: '0723244419',
+      userName: name,
+      phoneNumber: phoneNumber,
     })
 
     var config = {
       method: 'post',
-      url: 'http://localhost:3000/auth/publisherRegister',
+      url: 'http://10.0.2.2:3000/auth/publisherRegister',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -47,10 +44,7 @@ export default function RegisterScreen({ navigation }) {
         console.log(error)
       })
 
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'OTPScreen' }],
-    })
+    // navigation.navigate('ViewAdsScreen')
   }
 
   return (
@@ -64,21 +58,13 @@ export default function RegisterScreen({ navigation }) {
         error={!!name.error}
         errorText={name.error}
       />
-      {/* <TextInput
-        label="Phone"
-        returnKeyType="done"
-        value={phoneNumber.value}
-        onChangeText={(text) => setPhoneNumber({ value: text, error: '' })}
-        error={!!phoneNumber.error}
-        errorText={phoneNumber.error}
-        keyboardType="numeric"
-      /> */}
+
       <Button
         mode="contained"
-        onPress={onSignUpPressed}
+        onPress={onGetOtpPressed}
         style={{ marginTop: 24 }}
       >
-        Get OTP
+        Create Account
       </Button>
 
       <View style={styles.row}>

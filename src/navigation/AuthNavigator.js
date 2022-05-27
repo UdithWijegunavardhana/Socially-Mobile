@@ -1,7 +1,6 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { LoginScreen, RegisterScreen, OTPScreen } from '../screens'
-import ViewAdsScreen from '../screens/ViewAdsScreen'
 
 const Stack = createStackNavigator()
 const AuthStack = () => (
@@ -28,11 +27,6 @@ const AuthStack = () => (
       name="OTPScreen"
       component={OTPScreen}
       options={{ title: 'OTP' }}
-    />
-    <Stack.Screen
-      name="ViewAdsScreen"
-      component={ViewAdsScreen}
-      options={{ title: 'Ads' }}
     />
   </Stack.Navigator>
 )

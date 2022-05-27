@@ -23,7 +23,7 @@ export default function LoginScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://localhost:3000/auth/phone',
+      url: 'http://10.0.2.2:3000/auth/phone',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -32,19 +32,12 @@ export default function LoginScreen({ navigation }) {
 
     axios(config)
       .then(function (response) {
-        let IsnewUser = JSON.stringify(response.data.IsNewUser)
-        console.log(JSON.stringify(response.data.IsNewUser))
-        if (IsnewUser === 'true') {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'RegisterScreen' }],
-            param: phoneNumber.value,
-          })
-        } else {
-          navigation.navigate('OTPScreen', {
-            phoneNumber: phoneNumber.value,
-          })
-        }
+        let IsOtpSend = JSON.stringify(response.data.IsOtpSend)
+        console.log(IsOtpSend)
+        navigation.navigate('OTPScreen', {
+          IsOtpSend: IsOtpSend,
+          phoneNumber: phoneNumber.value,
+        })
       })
       .catch(function (error) {
         console.log(error)
