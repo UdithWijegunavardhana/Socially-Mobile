@@ -29,7 +29,7 @@ export default function RegisterScreen({ route, navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://10.0.2.2:3000/auth/publisherRegister',
+      url: 'http://localhost:3000/auth/publisherRegister',
       headers: {
         'Content-Type': 'application/json',
       },
