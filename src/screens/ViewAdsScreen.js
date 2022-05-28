@@ -7,49 +7,70 @@ import { Searchbar, IconButton, Menu, Divider } from 'react-native-paper'
 import { theme } from './../core/theme'
 import AppCard from '../components/AppCard'
 
-const advertisements = [
-  {
-    id: 1,
-    title: 'Up to 50% off !',
-    description:
-      'This is description of the first advertisements. It is more long and long. Only two lines wil display to the user. Then there is a end',
-    image: require('../assets/singer.png'),
-    paymentInformation: '$20.0/ Per Sale',
-  },
-  {
-    id: 2,
-    title: 'Daraz.lk Fashion week',
-    description: 'This is description of the second advertisement',
-    image: require('../assets/daraz.jpg'),
-    paymentInformation: '$5.0/ Per Sale',
-  },
-  {
-    id: 3,
-    title: 'Up to 50% off !',
-    description: 'This is description of the first advertisement',
-    image: require('../assets/singer.png'),
-    paymentInformation: '$20.0/ Per Sale',
-  },
-  {
-    id: 4,
-    title: 'Up to 50% off !',
-    description: 'This is description of the first advertisement',
-    image: require('../assets/singer.png'),
-    paymentInformation: '$20.0/ Per Sale',
-  },
-  {
-    id: 5,
-    title: 'Daraz.lk Fashion week',
-    description: 'This is description of the second advertisement',
-    image: require('../assets/daraz.jpg'),
-    paymentInformation: '$5.0/ Per Sale',
-  },
-]
+// const advertisements = [
+//   {
+//     id: 1,
+//     title: 'Up to 50% off !',
+//     description:
+//       'This is description of the first advertisements. It is more long and long. Only two lines wil display to the user. Then there is a end',
+//     image: require('../assets/singer.png'),
+//     paymentInformation: '$20.0/ Per Sale',
+//   },
+//   {
+//     id: 2,
+//     title: 'Daraz.lk Fashion week',
+//     description: 'This is description of the second advertisement',
+//     image: require('../assets/daraz.jpg'),
+//     paymentInformation: '$5.0/ Per Sale',
+//   },
+//   {
+//     id: 3,
+//     title: 'Up to 50% off !',
+//     description: 'This is description of the first advertisement',
+//     image: require('../assets/singer.png'),
+//     paymentInformation: '$20.0/ Per Sale',
+//   },
+//   {
+//     id: 4,
+//     title: 'Up to 50% off !',
+//     description: 'This is description of the first advertisement',
+//     image: require('../assets/singer.png'),
+//     paymentInformation: '$20.0/ Per Sale',
+//   },
+//   {
+//     id: 5,
+//     title: 'Daraz.lk Fashion week',
+//     description: 'This is description of the second advertisement',
+//     image: require('../assets/daraz.jpg'),
+//     paymentInformation: '$5.0/ Per Sale',
+//   },
+// ]
 
 export default function ViewAdsScreen({ navigation }) {
-  const [data, setData] = useState(advertisements)
+  const [data, setData] = useState()
+  //const [image, setImage] = useState()
   const [searchQuery, setSearchQuery] = useState('')
   const [visible, setVisible] = useState(false)
+
+  //API Connection - creative data
+  var axios = require('axios');
+  var config = {
+      method: 'get',
+      url: 'http://localhost:3000/creative',
+      headers: { }
+  };
+
+  var delay = 15000; 
+  setTimeout(() => {
+      axios(config)
+    .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        setData(response.data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+  }, delay);
 
   const openMenu = () => setVisible(true)
 
@@ -58,20 +79,20 @@ export default function ViewAdsScreen({ navigation }) {
   const onChangeSearch = (searchQuery) => {
     if (searchQuery) {
       const formatedData = searchQuery.toLowerCase()
-      const filterData = filter(advertisements, (advertisement) => {
-        return contains(advertisement, formatedData)
+      const filterData = filter(data, (creative) => {
+        return contains(creative, formatedData)
       })
       setData(filterData)
       setSearchQuery(formatedData)
     } else {
-      setData(advertisements)
+      setData(data)
     }
   }
 
-  const contains = ({ title, description }, searchQuery) => {
+  const contains = ({ creativeHeading, creativeDescription }, searchQuery) => {
     if (
-      title.toLowerCase().includes(searchQuery) ||
-      description.toLowerCase().includes(searchQuery)
+      creativeHeading.toLowerCase().includes(searchQuery) ||
+      creativeDescription.toLowerCase().includes(searchQuery)
     ) {
       return true
     }
@@ -109,7 +130,7 @@ export default function ViewAdsScreen({ navigation }) {
       </View>
       <FlatList
         data={data}
-        keyExtractor={(data) => data.id.toString()}
+        keyExtractor={(data) => data.creativeId.toString()}
         contentContainerStyle={{ paddingBottom: 60 }}
         style={{
           shadowColor: theme.colors.medium,
@@ -119,9 +140,9 @@ export default function ViewAdsScreen({ navigation }) {
         renderItem={({ item }) => (
           <AppCard
             image={item.image}
-            title={item.title}
-            description={item.description}
-            paymentInformation={item.paymentInformation}
+            title={item.creativeHeading}
+            description={item.creativeDescription}
+            paymentInformation={"$ "+item.costPerSale+" / Per Sale"}
           />
         )}
       />
