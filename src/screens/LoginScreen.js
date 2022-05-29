@@ -35,8 +35,9 @@ export default function LoginScreen({ navigation }) {
         let IsOtpSend = JSON.stringify(response.data.IsOtpSend)
         console.log(IsOtpSend)
         navigation.navigate('OTPScreen', {
+          screen: 'OTPScreen',
           IsOtpSend: IsOtpSend,
-          phoneNumber: phoneNumber.value,
+          params : { phoneNumber: phoneNumber.value }
         })
       })
       .catch(function (error) {

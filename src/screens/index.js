@@ -3,4 +3,6 @@ export { default as OTPScreen } from './OTPScreen'
 export { default as RegisterScreen } from './RegisterScreen'
 export { default as ProfileScreen } from './ProfileScreen'
 export { default as Dashboard } from './Dashboard'
-
+export { default as SplashScreen } from './SplashScreen'
+export { default as Editprofilescreen } from './EditProfileScreen'
+export { default as ViewAdsScreen } from './ViewAdsScreen'
