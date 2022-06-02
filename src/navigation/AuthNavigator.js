@@ -8,44 +8,42 @@ import {
   ViewAdsScreen,
   ProfileScreen,
   Editprofilescreen,
+  Paymentsscreen,
+  TransactionScreen,
 } from '../screens'
-import Button from '../components/Button'
 import { IconButton } from 'react-native-paper'
 import * as SecureStore from 'expo-secure-store'
 
-// const AuthStack = () => (
-//   <Stack.Navigator
-//     initialRouteName="LoginScreen"
-//     screenOptions={{
-//       headerShown: true,
-//       headerTitleStyle: {
-//         fontWeight: 'bold',
-//       },
-//     }}
-//   >
-//     <Stack.Screen
-//       name="LoginScreen"
-//       component={LoginScreen}
-//       options={{ title: 'Socially' }}
-//     />
-//     <Stack.Screen
-//       name="RegisterScreen"
-//       component={RegisterScreen}
-//       options={{ title: 'Register' }}
-//     />
-//     <Stack.Screen
-//       name="OTPScreen"
-//       component={OTPScreen}
-//       options={{ title: 'OTP' }}
-//     />
-//     <Stack.Screen
-//       name="ViewAdsScreen"
-//       component={ViewAdsScreen}
-//       options={{ title: 'Ads'}}
-//     />
-//   </Stack.Navigator>
-// )
-// export default AuthStack
+const AuthStack = createStackNavigator()
+function StackAuth({ navigation }) {
+  return (
+    <AuthStack.Navigator
+      initialRouteName="LoginScreen"
+      screenOptions={{
+        headerShown: true,
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}
+    >
+      <AuthStack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{ title: 'Socially' }}
+      />
+      <AuthStack.Screen
+        name="RegisterScreen"
+        component={RegisterScreen}
+        options={{ title: 'Register' }}
+      />
+      <AuthStack.Screen
+        name="OTPScreen"
+        component={OTPScreen}
+        options={{ title: 'OTP' }}
+      />
+    </AuthStack.Navigator>
+  )
+}
 
 const AppStack = createStackNavigator()
 function StackApp({ navigation }) {
@@ -92,38 +90,21 @@ function StackApp({ navigation }) {
           title: 'Edit Account',
         })}
       />
+      <AuthStack.Screen
+        name="Paymentsscreen"
+        component={Paymentsscreen}
+        options={({ navigation }) => ({
+          title: 'Withdraw',
+        })}
+      />
+      <AuthStack.Screen
+        name="TransactionScreen"
+        component={TransactionScreen}
+        options={({ navigation }) => ({
+          title: 'Transaction History',
+        })}
+      />
     </AppStack.Navigator>
-  )
-}
-
-const AuthStack = createStackNavigator()
-function StackAuth({ navigation }) {
-  return (
-    <AuthStack.Navigator
-      initialRouteName="LoginScreen"
-      screenOptions={{
-        headerShown: true,
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}
-    >
-      <AuthStack.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-        options={{ title: 'Socially' }}
-      />
-      <AuthStack.Screen
-        name="RegisterScreen"
-        component={RegisterScreen}
-        options={{ title: 'Register' }}
-      />
-      <AuthStack.Screen
-        name="OTPScreen"
-        component={OTPScreen}
-        options={{ title: 'OTP' }}
-      />
-    </AuthStack.Navigator>
   )
 }
 
@@ -214,19 +195,13 @@ export default function NavStack({ navigation }) {
       >
         {state.isLoading ? (
           <Stack.Screen name="Splash" component={SplashScreen} />
-        ) : state.userToken == null ? (
+        ) : state.userToken == !null ? (
           <>
             <Stack.Screen name="SignIn" component={StackAuth} />
           </>
-
-        ) : ( //-----------------------------------------------------------------------
-
+        ) : (
           <>
-            <Stack.Screen
-              name="ViewAdsScreen"
-              component={StackApp}
-              
-            />
+            <Stack.Screen name="ViewAdsScreen" component={StackApp} />
           </>
         )}
       </Stack.Navigator>

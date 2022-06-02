@@ -88,7 +88,10 @@ const Editprofilescreen = () => {
           </Text>
         </View>
         <View style={styles.action}>
-          <TextInput label="User Name" autoCorrect={false} />
+          <TextInput 
+            label="User Name" 
+            autoCorrect={false} 
+          />
           <TextInput
             label="Phone Number"
             autoCorrect={false}

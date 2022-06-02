@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, SafeAreaView } from 'react-native'
 import { theme } from './../core/theme'
 import Button from '../components/Button'
@@ -6,8 +6,88 @@ import { Avatar, Divider } from 'react-native-paper'
 import Icontext from '../components/IconText'
 import Apptext from '../components/AppText'
 import Icontextbutton from '../components/IconTextButton'
+import { StripeProvider, useStripe, Alert } from '@stripe/stripe-react-native'
 
-const Profilescreen = () => {
+function Stripe() {
+  return (
+    <StripeProvider
+      publishableKey="pk_test_51JvHR3ID7bnBPNMMnJhLGQ6iIb4CSwUPc6YYB0ZDbs6qq32QX3h9TE4X6CeBGNAUtq73gWuXYCTm40GPUdHwIO4E00Eg2iQWf6"
+      urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
+      merchantIdentifier="merchant.com.{{YOUR_APP_NAME}}" // required for Apple Pay
+    >
+      // Your app code here
+    </StripeProvider>
+  )
+}
+
+const Profilescreen = ({ navigation }) => {
+  const { initPaymentSheet, presentPaymentSheet } = useStripe()
+  const [loading, setLoading] = useState(false)
+
+  // const fetchPaymentSheetParams = async () => {
+  //   const response = await fetch(`${API_URL}/checkout`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   })
+  //   const { paymentIntent, ephemeralKey, customer } = await response.json()
+  //   return {
+  //     paymentIntent,
+  //     ephemeralKey,
+  //     customer,
+  //   }
+  // }
+
+  const ephemeralKey = {
+    customer: 'a001',
+    apiVersion: '2020-08-27',
+  }
+
+  const paymentIntent = {
+    amount: 1099,
+    currency: 'usd',
+    customer: 'a001',
+    paymentMethodTypes: ['card'],
+
+    // return ({
+    //   paymentIntent: paymentIntent.client_secret,
+    //   ephemeralKey: ephemeralKey.secret,
+    //   customer: customer.id,
+    //   publishableKey: 'pk_test_51JvHR3ID7bnBPNMMnJ...PUdHwIO4E00Eg2iQWf6'
+    // })
+  }
+
+  const initializePaymentSheet = async () => {
+    // const { paymentIntent, ephemeralKey, customer, publishableKey } =
+    //   await fetchPaymentSheetParams()
+
+    const { error } = await initPaymentSheet({
+      customerId: ephemeralKey.customer,
+      customerEphemeralKeySecret: ephemeralKey,
+      paymentIntentClientSecret: paymentIntent,
+      // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+      //methods that complete payment after a delay, like SEPA Debit and Sofort.
+      allowsDelayedPaymentMethods: true,
+    })
+    if (!error) {
+      setLoading(true)
+    }
+  }
+
+  const openPaymentSheet = async () => {
+    const { error } = await presentPaymentSheet()
+    if (error) {
+      console.log(`Error code: ${error.code}`, error.message)
+    } else {
+      console.log('Success', 'Your order is confirmed!')
+    }
+  }
+
+  useEffect(() => {
+    initializePaymentSheet()
+  }, [])
+
   return (
     <SafeAreaView
       style={{ padding: 5, backgroundColor: theme.colors.white, flex: 1 }}
@@ -50,15 +130,20 @@ const Profilescreen = () => {
         <Button
           mode="contained"
           uppercase={false}
+          // disabled={!loading}
           labelStyle={styles.labelStyle}
-          onPress={() => console.log('Withraw page')}
+          onPress={() => navigation.navigate('Paymentsscreen')}
         >
           Withdraw
         </Button>
       </View>
       <View style={styles.navigationSection}>
         <Icontextbutton name="help-circle" title="Help" />
-        <Icontextbutton name="bank-transfer" title="View Transactions" />
+        <Icontextbutton
+          name="bank-transfer"
+          title="View Transactions"
+          onPress={() => navigation.navigate('TransactionScreen')}
+        />
         <Icontextbutton name="currency-usd-circle" title="My Earnings" />
         <Icontextbutton name="logout" title="Log Out" />
       </View>
