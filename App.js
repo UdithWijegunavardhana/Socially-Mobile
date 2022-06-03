@@ -9,8 +9,8 @@ export default function App() {
   return (
     <Provider theme={theme}>
       <NavigationContainer>
-        {/* <AuthNavigator /> */}
-        <AppNavigator />
+        <AuthNavigator />
+        {/* <AppNavigator /> */}
       </NavigationContainer>
     </Provider>
   )

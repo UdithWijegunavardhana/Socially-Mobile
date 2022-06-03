@@ -54,6 +54,7 @@ export default function OTPScreen({ route, navigation }) {
         setErr(error)
       })
   }
+
   // const clear = () => {
   //   this.input1.clear()
   // }
