@@ -15,7 +15,6 @@ function App() {
       urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
       merchantIdentifier="merchant.com.{{YOUR_APP_NAME}}" // required for Apple Pay
     >
-      // Your app code here
     </StripeProvider>
   )
 }
@@ -33,7 +32,6 @@ const PaymentsScreen = ({ navigation }) => {
       customerEphemeralKeySecret: ephemeralKey,
       paymentIntentClientSecret: paymentIntent,
     })
-
     if (error) {
       Alert.alert(error.message)
     }
