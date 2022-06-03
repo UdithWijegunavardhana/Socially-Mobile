@@ -24,43 +24,24 @@ const Profilescreen = ({ navigation }) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe()
   const [loading, setLoading] = useState(false)
 
-  // const fetchPaymentSheetParams = async () => {
-  //   const response = await fetch(`${API_URL}/checkout`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //   const { paymentIntent, ephemeralKey, customer } = await response.json()
-  //   return {
-  //     paymentIntent,
-  //     ephemeralKey,
-  //     customer,
-  //   }
-  // }
-
-  const ephemeralKey = {
-    customer: 'a001',
-    apiVersion: '2020-08-27',
-  }
-
-  const paymentIntent = {
-    amount: 1099,
-    currency: 'usd',
-    customer: 'a001',
-    paymentMethodTypes: ['card'],
-
-    // return ({
-    //   paymentIntent: paymentIntent.client_secret,
-    //   ephemeralKey: ephemeralKey.secret,
-    //   customer: customer.id,
-    //   publishableKey: 'pk_test_51JvHR3ID7bnBPNMMnJ...PUdHwIO4E00Eg2iQWf6'
-    // })
+  const fetchPaymentSheetParams = async () => {
+    const response = await fetch(`${API_URL}/checkout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    const { paymentIntent, ephemeralKey, customer } = await response.json()
+    return {
+      paymentIntent,
+      ephemeralKey,
+      customer,
+    }
   }
 
   const initializePaymentSheet = async () => {
-    // const { paymentIntent, ephemeralKey, customer, publishableKey } =
-    //   await fetchPaymentSheetParams()
+    const { paymentIntent, ephemeralKey, customer, publishableKey } =
+      await fetchPaymentSheetParams()
 
     const { error } = await initPaymentSheet({
       customerId: ephemeralKey.customer,
@@ -194,7 +175,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   navButton: {},
-
   navButtonsText: {
     fontSize: 17,
     color: theme.colors.dark,

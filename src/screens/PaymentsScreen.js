@@ -4,7 +4,9 @@ import { CardField, useStripe } from '@stripe/stripe-react-native'
 import { StripeProvider } from '@stripe/stripe-react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { theme } from '../core/theme'
-import { Button } from 'react-native-paper'
+import { Button, Switch } from 'react-native-paper'
+import Apptext from '../components/AppText'
+import TextInput from '../components/TextInput'
 
 function App() {
   return (
@@ -50,10 +52,18 @@ const PaymentsScreen = ({ navigation }) => {
     <SafeAreaProvider>
       <View style={styles.container}>
         <Image
-          source={require('../assets/DebitCard4.png')}
+          source={require('../assets/DebitCard5.png')}
           style={styles.cardImage}
         />
+        <View style={styles.amountSection}>
+          <Apptext style={styles.text}>Amount </Apptext>
+          <View style={{ flexDirection: 'row' }}>
+            <Apptext children="US$" style={styles.amount} />
+            <Apptext children=" 230.00" style={styles.amount} />
+          </View>
+        </View>
       </View>
+
       <View style={{ backgroundColor: 'white' }}>
         <CardField
           postalCodeEnabled={false}
@@ -72,10 +82,15 @@ const PaymentsScreen = ({ navigation }) => {
             console.log('focusField', focusedField)
           }}
         />
+        <TextInput
+          label="Card Holder"
+          autoCorrect={false}
+          style={styles.input}
+        />
         <Button
           mode="contained"
           uppercase={true}
-          height={48}
+          height={45}
           width={'85%'}
           marginBottom={70}
           alignSelf={'center'}
@@ -90,26 +105,27 @@ const PaymentsScreen = ({ navigation }) => {
   )
 }
 
-export default PaymentsScreen
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.white,
   },
   cardImage: {
-    width: '130%',
-    height: '68%',
+    width: '113%',
+    height: '50%',
+    marginTop: '3%',
     resizeMode: 'contain',
     alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 10, height: 50 },
   },
   cardField: {
     width: '85%',
-    height: 50,
-    marginBottom: 35,
+    height: 45,
+    marginBottom: 20,
     alignSelf: 'center',
     borderColor: theme.colors.primary,
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 5,
   },
   labelStyle: {
@@ -117,4 +133,25 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 13,
   },
+  amount: {
+    fontSize: 30,
+    color: theme.colors.primary,
+    fontWeight: '700',
+  },
+  amountSection: {
+    marginLeft: '7.5%',
+  },
+  text: {
+    fontSize: 17,
+    color: theme.colors.mediumGrey,
+  },
+  input: {
+    width: '85%',
+    alignSelf: 'center',
+    borderColor: theme.colors.primary,
+    height: 44,
+    marginBottom: 20,
+  },
 })
+
+export default PaymentsScreen

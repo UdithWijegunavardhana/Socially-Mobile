@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Image, Text } from 'react-native'
 import Background from '../components/Background'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
@@ -37,7 +37,7 @@ export default function LoginScreen({ navigation }) {
         navigation.navigate('OTPScreen', {
           screen: 'OTPScreen',
           IsOtpSend: IsOtpSend,
-          params : { phoneNumber: phoneNumber.value }
+          params: { phoneNumber: phoneNumber.value },
         })
       })
       .catch(function (error) {
@@ -47,6 +47,8 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <Background>
+      <Text></Text>
+      <Image source={require('../assets/login01.png')} style={styles.image} />
       <TextInput
         label="Phone"
         returnKeyType="done"
@@ -60,26 +62,23 @@ export default function LoginScreen({ navigation }) {
       <Button mode="contained" onPress={onLoginPressed}>
         Get OTP
       </Button>
+      {/* <Button 
+        mode="outlined" 
+        onPress={() => navigation.navigate('RegisterScreen')}
+        height={7}
+        width={2}
+      >
+        New User
+      </Button> */}
     </Background>
   )
 }
 
 const styles = StyleSheet.create({
-  forgotPassword: {
-    width: '100%',
-    alignItems: 'flex-end',
-    marginBottom: 24,
-  },
-  row: {
-    flexDirection: 'row',
-    marginTop: 4,
-  },
-  forgot: {
-    fontSize: 13,
-    color: theme.colors.secondary,
-  },
-  link: {
-    fontWeight: 'bold',
-    color: theme.colors.primary,
+  image: {
+    width: '260%',
+    height: 465,
+    resizeMode: 'contain',
+    alignSelf: 'center',
   },
 })

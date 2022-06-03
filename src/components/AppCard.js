@@ -14,7 +14,10 @@ const AppCard = ({ image, title, description, paymentInformation }) => {
   }
   return (
     <Card style={styles.container} mode="elevated">
-      <Card.Cover source={image} style={styles.image} />
+      <Card.Cover
+        source={require('../assets/singer.png')}
+        style={styles.image}
+      />
       <Card.Content style={styles.content}>
         <Title style={styles.title} titleNumberOfLines={1}>
           {title}
