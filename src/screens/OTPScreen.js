@@ -27,7 +27,7 @@ export default function OTPScreen({ route, navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://localhost:3000/auth/otp',
+      url: 'http://10.0.2.2:3000/auth/otp',
       headers: {
         'Content-Type': 'application/json',
       },

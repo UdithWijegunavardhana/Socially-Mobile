@@ -23,7 +23,7 @@ export default function LoginScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://localhost:3000/auth/phone',
+      url: 'http://10.0.2.2:3000/auth/phone',
       headers: {
         'Content-Type': 'application/json',
       },

@@ -53,24 +53,24 @@ export default function ViewAdsScreen({ navigation }) {
   const [visible, setVisible] = useState(false)
 
   //API Connection - creative data
-  var axios = require('axios');
+  var axios = require('axios')
   var config = {
-      method: 'get',
-      url: 'http://localhost:3000/creative',
-      headers: { }
-  };
+    method: 'get',
+    url: 'http://10.0.2.2:3000/creative',
+    headers: {},
+  }
 
-  var delay = 15000; 
+  var delay = 15000
   setTimeout(() => {
-      axios(config)
-    .then(function (response) {
-        console.log(JSON.stringify(response.data));
-        setData(response.data);
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
-  }, delay);
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data))
+        setData(response.data)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }, delay)
 
   const openMenu = () => setVisible(true)
 
@@ -142,7 +142,7 @@ export default function ViewAdsScreen({ navigation }) {
             image={item.image}
             title={item.creativeHeading}
             description={item.creativeDescription}
-            paymentInformation={"$ "+item.costPerSale+" / Per Sale"}
+            paymentInformation={'$ ' + item.costPerSale + ' / Per Sale'}
           />
         )}
       />
