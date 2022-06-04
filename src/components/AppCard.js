@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     elevation: 20,
   },
   image: {
-    height: 130,
+    height: 160,
   },
   shareButton: {
     width: 94,
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     color: theme.colors.medium,
   },
   content: {
-    height: 70,
+    height: 60,
   },
 })
 

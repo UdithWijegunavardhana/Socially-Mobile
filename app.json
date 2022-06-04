@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Simple Login Template",
-    "slug": "simple-login-template",
+    "name": "Socially",
+    "slug": "Socially",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
