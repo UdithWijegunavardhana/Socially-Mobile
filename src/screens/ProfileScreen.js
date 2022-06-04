@@ -7,6 +7,7 @@ import Icontext from '../components/IconText'
 import Apptext from '../components/AppText'
 import Icontextbutton from '../components/IconTextButton'
 import { StripeProvider, useStripe, Alert } from '@stripe/stripe-react-native'
+import { AuthContext } from '../helpers/Utils'
 
 function Stripe() {
   return (
@@ -21,53 +22,55 @@ function Stripe() {
 }
 
 const Profilescreen = ({ navigation }) => {
-  const { initPaymentSheet, presentPaymentSheet } = useStripe()
-  const [loading, setLoading] = useState(false)
+  // const { initPaymentSheet, presentPaymentSheet } = useStripe()
+  // const [loading, setLoading] = useState(false)
 
-  const fetchPaymentSheetParams = async () => {
-    const response = await fetch(`${API_URL}/checkout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    const { paymentIntent, ephemeralKey, customer } = await response.json()
-    return {
-      paymentIntent,
-      ephemeralKey,
-      customer,
-    }
-  }
+  // const fetchPaymentSheetParams = async () => {
+  //   const response = await fetch(`${API_URL}/checkout`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   })
+  //   const { paymentIntent, ephemeralKey, customer } = await response.json()
+  //   return {
+  //     paymentIntent,
+  //     ephemeralKey,
+  //     customer,
+  //   }
+  // }
 
-  const initializePaymentSheet = async () => {
-    const { paymentIntent, ephemeralKey, customer, publishableKey } =
-      await fetchPaymentSheetParams()
+  // const initializePaymentSheet = async () => {
+  //   const { paymentIntent, ephemeralKey, customer, publishableKey } =
+  //     await fetchPaymentSheetParams()
 
-    const { error } = await initPaymentSheet({
-      customerId: ephemeralKey.customer,
-      customerEphemeralKeySecret: ephemeralKey,
-      paymentIntentClientSecret: paymentIntent,
-      // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
-      //methods that complete payment after a delay, like SEPA Debit and Sofort.
-      allowsDelayedPaymentMethods: true,
-    })
-    if (!error) {
-      setLoading(true)
-    }
-  }
+  //   const { error } = await initPaymentSheet({
+  //     customerId: ephemeralKey.customer,
+  //     customerEphemeralKeySecret: ephemeralKey,
+  //     paymentIntentClientSecret: paymentIntent,
+  //     // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+  //     //methods that complete payment after a delay, like SEPA Debit and Sofort.
+  //     allowsDelayedPaymentMethods: true,
+  //   })
+  //   if (!error) {
+  //     setLoading(true)
+  //   }
+  // }
 
-  const openPaymentSheet = async () => {
-    const { error } = await presentPaymentSheet()
-    if (error) {
-      console.log(`Error code: ${error.code}`, error.message)
-    } else {
-      console.log('Success', 'Your order is confirmed!')
-    }
-  }
+  // const openPaymentSheet = async () => {
+  //   const { error } = await presentPaymentSheet()
+  //   if (error) {
+  //     console.log(`Error code: ${error.code}`, error.message)
+  //   } else {
+  //     console.log('Success', 'Your order is confirmed!')
+  //   }
+  // }
 
-  useEffect(() => {
-    initializePaymentSheet()
-  }, [])
+  // useEffect(() => {
+  //   initializePaymentSheet()
+  // }, [])
+
+  const { signOut } = React.useContext(AuthContext)
 
   return (
     <SafeAreaView
@@ -126,7 +129,7 @@ const Profilescreen = ({ navigation }) => {
           onPress={() => navigation.navigate('TransactionScreen')}
         />
         <Icontextbutton name="currency-usd-circle" title="My Earnings" />
-        <Icontextbutton name="logout" title="Log Out" />
+        <Icontextbutton name="logout" title="Log Out" onPress={signOut} />
       </View>
     </SafeAreaView>
   )
