@@ -13,6 +13,9 @@ import {
 } from '../screens'
 import { IconButton } from 'react-native-paper'
 import * as SecureStore from 'expo-secure-store'
+import { theme } from '../core/theme'
+import { AuthContext } from '../helpers/Utils'
+import * as FileSystem from 'expo-file-system';
 
 const AuthStack = createStackNavigator()
 function StackAuth({ navigation }) {
@@ -109,7 +112,6 @@ function StackApp({ navigation }) {
 }
 
 const Stack = createStackNavigator()
-const AuthContext = React.createContext()
 
 export default function NavStack({ navigation }) {
   const [state, dispatch] = React.useReducer(
@@ -122,12 +124,19 @@ export default function NavStack({ navigation }) {
             isLoading: false,
           }
         case 'SIGN_IN':
+          if (action.token) {
+            SecureStore.setItemAsync('userToken', action.token)
+          }else{
+            console.log('no token stored in secure store')
+          }
           return {
             ...prevState,
             isSignout: false,
             userToken: action.token,
           }
         case 'SIGN_OUT':
+          SecureStore.deleteItemAsync('userToken')
+          console.log('you are loged out')
           return {
             ...prevState,
             isSignout: true,
@@ -143,44 +152,33 @@ export default function NavStack({ navigation }) {
   )
 
   React.useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
       let userToken
-
       try {
         userToken = await SecureStore.getItemAsync('userToken')
       } catch (e) {
-        // Restoring token failed
+        console.log("Restoring token failed") // Restoring token failed
       }
-
       // After restoring token, we may need to validate it in production apps
-
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
       dispatch({ type: 'RESTORE_TOKEN', token: userToken })
     }
-
     bootstrapAsync()
   }, [])
 
   const authContext = React.useMemo(
     () => ({
       signIn: async (data) => {
+        // const userToken=data.userToken
         // In a production app, we need to send some data (usually username, password) to server and get a token
         // We will also need to handle errors if sign in failed
         // After getting token, we need to persist the token using `SecureStore`
-        // In the example, we'll use a dummy token
-
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' })
+        dispatch({ type: 'SIGN_IN', token: 'userToken'})
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
       signUp: async (data) => {
-        // In a production app, we need to send user data to server and get a token
-        // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `SecureStore`
-        // In the example, we'll use a dummy token
-
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' })
+        dispatch({ type: 'SIGN_IN', token: userToken })
       },
     }),
     []

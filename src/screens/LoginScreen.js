@@ -5,6 +5,7 @@ import Button from '../components/Button'
 import TextInput from '../components/TextInput'
 import { theme } from '../core/theme'
 import { phoneNumberValidator } from '../helpers/PhoneNumberValidator'
+import { AuthContext } from '../helpers/Utils'
 
 export default function LoginScreen({ navigation }) {
   const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
@@ -33,11 +34,11 @@ export default function LoginScreen({ navigation }) {
     axios(config)
       .then(function (response) {
         let IsOtpSend = JSON.stringify(response.data.IsOtpSend)
-        console.log(IsOtpSend)
+        console.log('OTP send : '+IsOtpSend)
         navigation.navigate('OTPScreen', {
-          screen: 'OTPScreen',
+          // screen: 'OTPScreen',
           IsOtpSend: IsOtpSend,
-          params: { phoneNumber: phoneNumber.value },
+          phoneNumber: phoneNumber.value,
         })
       })
       .catch(function (error) {

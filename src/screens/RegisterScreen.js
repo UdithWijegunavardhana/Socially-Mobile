@@ -8,6 +8,7 @@ import TextInput from '../components/TextInput'
 import { theme } from '../core/theme'
 import { nameValidator } from '../helpers/nameValidator'
 import OTPScreen from './OTPScreen'
+import { AuthContext } from '../helpers/Utils'
 
 export default function RegisterScreen({ route, navigation }) {
   const [name, setName] = useState({ value: '', error: '' })

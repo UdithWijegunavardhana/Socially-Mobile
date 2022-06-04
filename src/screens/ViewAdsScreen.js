@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, SafeAreaView, FlatList } from 'react-native'
 import Constants from 'expo-constants'
 import { filter } from 'lodash'
 import { Searchbar, IconButton, Menu, Divider } from 'react-native-paper'
-
+import { AuthContext } from '../helpers/Utils'
 import { theme } from './../core/theme'
 import AppCard from '../components/AppCard'
 
@@ -60,8 +60,7 @@ export default function ViewAdsScreen({ navigation }) {
     headers: {},
   }
 
-  var delay = 15000
-  setTimeout(() => {
+  useEffect(() => {
     axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data))
@@ -70,7 +69,11 @@ export default function ViewAdsScreen({ navigation }) {
       .catch(function (error) {
         console.log(error)
       })
-  }, delay)
+  }, [])
+
+  // var delay = 15000
+  // setTimeout(() => {
+  // }, delay)
 
   const openMenu = () => setVisible(true)
 

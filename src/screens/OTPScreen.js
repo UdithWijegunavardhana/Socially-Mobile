@@ -1,24 +1,22 @@
-import React, { useState, useRef, useEffect, Component } from 'react'
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  Text,
-  Alert,
-  TouchableOpacity,
-} from 'react-native'
+import React, { useState } from 'react'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { Button as PaperButton } from 'react-native-paper'
 import OTPTextView from 'react-native-otp-textinput'
 import Background from '../components/Background'
 import { theme } from '../core/theme'
+import { AuthContext } from '../helpers/Utils'
 
 export default function OTPScreen({ route, navigation }) {
   const [otpInput, setOtpInput] = useState('')
   const [err, setErr] = useState('')
 
   const { phoneNumber } = route.params
+  const { signIn } = React.useContext(AuthContext)
+  function onLoginPressed() {
+    signIn(phoneNumber, otpInput)
+  }
 
-  const handleOtpVerify = () => {
+  function handleOtpVerify() {
     var axios = require('axios')
     var data = JSON.stringify({
       phoneNumber: phoneNumber,
@@ -37,21 +35,23 @@ export default function OTPScreen({ route, navigation }) {
     axios(config)
       .then(function (response) {
         let responseNumber = response.data.phoneNumber
+        let userToken = response.data.accessToken
         let isNewUser = response.data.isNewUser
-        console.log(isNewUser)
+        console.log('new user: ' + isNewUser)
         if (responseNumber) {
           if (isNewUser === true) {
             navigation.navigate('RegisterScreen', {
               phoneNumber: phoneNumber,
             })
           } else {
-            // navigation.navigate('ViewAdsScreen')
-            console.log('navigate to ads screen')
+            console.log('You are loged In')
+            console.log(userToken)
           }
         }
       })
       .catch(function (error) {
         setErr(error)
+        console.log(error)
       })
   }
 
@@ -69,7 +69,7 @@ export default function OTPScreen({ route, navigation }) {
         <Text style={styles.textInputContainer}>
           Please enter the 6 digit code sent to
         </Text>
-        <Text>{phoneNumber}</Text>
+        <Text style={{ fontSize: 15 }}>{phoneNumber}</Text>
 
         <OTPTextView
           containerStyle={styles.textInputContainer}
@@ -78,15 +78,6 @@ export default function OTPScreen({ route, navigation }) {
           keyboardType="default"
         />
         <Text style={styles.errMessage}>{err}</Text>
-        <TouchableOpacity>
-          <PaperButton
-            mode="outlined"
-            onPress={handleOtpVerify}
-            uppercase={false}
-          >
-            Verify
-          </PaperButton>
-        </TouchableOpacity>
 
         <View style={styles.buttonWrapper}>
           <Text style={styles.textNearButton}> Didn't receive a code ? </Text>
@@ -94,46 +85,24 @@ export default function OTPScreen({ route, navigation }) {
             Resend OTP
           </PaperButton>
         </View>
+        <TouchableOpacity>
+          <PaperButton
+            mode="contained"
+            onPress={() => {
+              handleOtpVerify()
+              onLoginPressed()
+            }}
+            uppercase={true}
+            style={styles.verifyButton}
+            labelStyle={{ color: 'white', marginTop: 13 }}
+          >
+            Verify
+          </PaperButton>
+        </TouchableOpacity>
       </View>
     </Background>
   )
 }
-// export default function verify({ navigation }) {
-//   const { phoneNumber } = route.params
-//   return (
-//     <Background>
-//       <OTPScreen />
-//       <PaperButton
-//         style={styles.wrongNumButton}
-//         mode="text"
-//         uppercase={false}
-//         onPress={() => navigation.navigate('LoginScreen')}
-//         // onPress={() =>
-//         //   navigation.reset({
-//         //     index: 0,
-//         //     routes: [{ name: 'LoginScreen' }],
-//         //   })
-//         // }
-//       >
-//         Wrong number
-//         {phoneNumber}
-//       </PaperButton>
-//       <PaperButton
-//         style={styles.verifyButton}
-//         mode="contained"
-//         // onPress={() => navigation.navigate('Dashboard')}
-//         // onPress={() =>
-//         //   navigation.reset({
-//         //     index: 0,
-//         //     routes: [{ name: 'Dashboard' }],
-//         //   })
-//         // }
-//       >
-//         Continue
-//       </PaperButton>
-//     </Background>
-//   )
-// }
 
 const styles = StyleSheet.create({
   container: {
@@ -141,6 +110,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 5,
+    marginBottom: 30,
   },
   instructions: {
     fontSize: 22,
@@ -150,7 +120,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   textInputContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   buttonWrapper: {
     flexDirection: 'row',
@@ -166,7 +136,8 @@ const styles = StyleSheet.create({
   },
   verifyButton: {
     marginTop: 20,
-    width: '85%',
+    width: 280,
+    height: 43,
   },
   wrongNumButton: {
     width: '80%',
