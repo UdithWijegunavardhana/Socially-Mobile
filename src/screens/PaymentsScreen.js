@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, Text, Image } from 'react-native'
-import { CardField, useStripe } from '@stripe/stripe-react-native'
+import { CardField, useStripe , useConfirmPayment } from '@stripe/stripe-react-native'
 import { StripeProvider } from '@stripe/stripe-react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { theme } from '../core/theme'
@@ -12,40 +12,54 @@ function App() {
   return (
     <StripeProvider
       publishableKey="pk_test_51JvHR3ID7bnBPNMMnJhLGQ6iIb4CSwUPc6YYB0ZDbs6qq32QX3h9TE4X6CeBGNAUtq73gWuXYCTm40GPUdHwIO4E00Eg2iQWf6"
-      urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
-      merchantIdentifier="merchant.com.{{YOUR_APP_NAME}}" // required for Apple Pay
+      urlScheme="your-url-scheme" 
+      merchantIdentifier="merchant.com.{{YOUR_APP_NAME}}" 
     >
     </StripeProvider>
   )
 }
 
 const PaymentsScreen = ({ navigation }) => {
-  const { paymentIntent, ephemeralKey, customer } = useStripe()
-  const [loading, setLoading] = useState(false)
 
-  const initializePaymentSheet = async () => {
-    const { paymentIntent, ephemeralKey, customer, publishableKey } =
-      await fetchPaymentSheetParams()
+  const {confirmPayment, loading} = useConfirmPayment();
 
-    const { error } = await initPaymentSheet({
-      customerId: ephemeralKey.customer,
-      customerEphemeralKeySecret: ephemeralKey,
-      paymentIntentClientSecret: paymentIntent,
-    })
+  const fetchPaymentIntentClientSecret = async () => {
+    const response = await fetch(`${API_URL}/create-payment-intent`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        currency: 'usd',
+      }),
+    });
+    const {clientSecret} = await response.json();
+
+    return clientSecret;
+  };
+
+  const handlePayPress = async () => {
+    const billingDetails = {
+      email: 'jenny.rosen@example.com',
+    };
+
+    const clientSecret = await fetchPaymentIntentClientSecret();
+
+    const {paymentIntent, error} = await confirmPayment(clientSecret, {
+      paymentMethodType: 'Card',
+      paymentMethodData: {
+        billingDetails,
+      },
+    });
+
     if (error) {
-      Alert.alert(error.message)
+      console.log('Payment confirmation error', error);
+    } else if (paymentIntent) {
+      console.log('Success from promise', paymentIntent);
     }
-  }
+  };
 
-  const presentPaymentSheet = async () => {
-    setLoading(true)
-    const { error } = await presentPaymentSheet()
-    if (error) {
-      Alert.alert(error.message)
-    }
-    setLoading(false)
-  }
-
+  
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
@@ -92,9 +106,9 @@ const PaymentsScreen = ({ navigation }) => {
           width={'85%'}
           marginBottom={70}
           alignSelf={'center'}
-          // disabled={!loading}
           labelStyle={styles.labelStyle}
-          onPress={() => alert('Payment in Progress')}
+          onPress={handlePayPress}
+          disabled={loading}
         >
           Confirm
         </Button>
