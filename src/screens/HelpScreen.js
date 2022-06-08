@@ -3,10 +3,10 @@ import { Text, View } from 'react-native'
 import Background from '../components/Background'
 import Button from '../components/Button'
 
-export default function Dashboard({ navigation }) {
+export default function HelpScreen({ navigation }) {
   return (
     <View>
-      <Text>This is home page</Text>
+      <Text>This is Healp page</Text>
     </View>
   )
 }

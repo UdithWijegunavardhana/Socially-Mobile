@@ -12,9 +12,6 @@ export default function OTPScreen({ route, navigation }) {
 
   const { phoneNumber } = route.params
   const { signIn } = React.useContext(AuthContext)
-  function onLoginPressed() {
-    signIn(phoneNumber, otpInput)
-  }
 
   function handleOtpVerify() {
     var axios = require('axios')
@@ -44,15 +41,20 @@ export default function OTPScreen({ route, navigation }) {
               phoneNumber: phoneNumber,
             })
           } else {
-            console.log('You are loged In')
-            console.log(userToken)
+            console.log('OTP Screen Process Success')
+            console.log('userToken: ' + userToken)
+            // setUserToken(userToken)
           }
         }
       })
       .catch(function (error) {
-        setErr(error)
+        setErr({ error })
         console.log(error)
       })
+  }
+
+  function onLoginPressed() {
+    signIn({ phoneNumber, otpInput })
   }
 
   // const clear = () => {

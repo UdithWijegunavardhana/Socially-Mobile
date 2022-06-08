@@ -15,7 +15,6 @@ import { IconButton } from 'react-native-paper'
 import * as SecureStore from 'expo-secure-store'
 import { theme } from '../core/theme'
 import { AuthContext } from '../helpers/Utils'
-import * as FileSystem from 'expo-file-system';
 
 const AuthStack = createStackNavigator()
 function StackAuth({ navigation }) {
@@ -114,8 +113,61 @@ function StackApp({ navigation }) {
 const Stack = createStackNavigator()
 
 export default function NavStack({ navigation }) {
-  const [state, dispatch] = React.useReducer(
-    (prevState, action) => {
+
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (data) => {
+        
+        var axios = require('axios');
+        var apiData = JSON.stringify({
+          phoneNumber: data.phoneNumber,
+          otp: data.otpInput,
+        });
+
+        var config = {
+            method: 'post',
+            url: 'http://localhost:3000/auth/otp',
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            data : apiData
+        };
+
+        axios(config)
+        .then(function (response) {
+            console.log(JSON.stringify(response.data));
+            var userToken = response.data.accessToken;
+            dispatch({ type: 'SIGN_IN', token: userToken })
+            console.log('Token fetched: '+userToken)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+        // dispatch({ type: 'SIGN_IN', token: userToken })
+      },
+      signOut: () => dispatch({ type: 'SIGN_OUT' }),
+      signUp: async (data) => {
+        dispatch({ type: 'SIGN_IN', token: userToken })
+      },
+    }),
+    []
+  )
+
+  React.useEffect(() => {
+    const bootstrapAsync = async () => {
+      let userToken
+      try {
+        userToken = await SecureStore.getItemAsync('userToken')
+        console.log('Token Restored : '+userToken)
+      } catch (e) {
+        console.log('Restoring token failed') 
+      }
+      dispatch({ type: 'RESTORE_TOKEN', token: userToken })
+    }
+    bootstrapAsync()
+  }, [])
+
+  const [state, dispatch] = React.useReducer((prevState, action) => {
       switch (action.type) {
         case 'RESTORE_TOKEN':
           return {
@@ -126,7 +178,9 @@ export default function NavStack({ navigation }) {
         case 'SIGN_IN':
           if (action.token) {
             SecureStore.setItemAsync('userToken', action.token)
-          }else{
+            console.log('Auth Flow is SUCCESS. Token:', action.token)
+            console.log('Staete:'+ action.token)
+          } else {
             console.log('no token stored in secure store')
           }
           return {
@@ -149,39 +203,6 @@ export default function NavStack({ navigation }) {
       isSignout: false,
       userToken: null,
     }
-  )
-
-  React.useEffect(() => {
-    const bootstrapAsync = async () => {
-      let userToken
-      try {
-        userToken = await SecureStore.getItemAsync('userToken')
-      } catch (e) {
-        console.log("Restoring token failed") // Restoring token failed
-      }
-      // After restoring token, we may need to validate it in production apps
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken })
-    }
-    bootstrapAsync()
-  }, [])
-
-  const authContext = React.useMemo(
-    () => ({
-      signIn: async (data) => {
-        // const userToken=data.userToken
-        // In a production app, we need to send some data (usually username, password) to server and get a token
-        // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `SecureStore`
-        dispatch({ type: 'SIGN_IN', token: 'userToken'})
-      },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
-      signUp: async (data) => {
-        dispatch({ type: 'SIGN_IN', token: userToken })
-      },
-    }),
-    []
   )
 
   return (
