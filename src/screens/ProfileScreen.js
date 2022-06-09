@@ -71,7 +71,6 @@ const Profilescreen = ({ navigation }) => {
   // }, [])
 
   const { signOut } = React.useContext(AuthContext)
-
   return (
     <SafeAreaView
       style={{ padding: 5, backgroundColor: theme.colors.white, flex: 1 }}
@@ -98,7 +97,7 @@ const Profilescreen = ({ navigation }) => {
           />
         </View>
       </View>
-      <Divider />
+      <Divider style={{ color: 'black' }} />
       <View style={styles.earningInfoSection}>
         <Icontext
           name="information-outline"
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
     flex: 2,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 40,
   },
   earningInfoSection: {
     flex: 2,

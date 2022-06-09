@@ -7,45 +7,6 @@ import { AuthContext } from '../helpers/Utils'
 import { theme } from './../core/theme'
 import AppCard from '../components/AppCard'
 
-// const advertisements = [
-//   {
-//     id: 1,
-//     title: 'Up to 50% off !',
-//     description:
-//       'This is description of the first advertisements. It is more long and long. Only two lines wil display to the user. Then there is a end',
-//     image: require('../assets/singer.png'),
-//     paymentInformation: '$20.0/ Per Sale',
-//   },
-//   {
-//     id: 2,
-//     title: 'Daraz.lk Fashion week',
-//     description: 'This is description of the second advertisement',
-//     image: require('../assets/daraz.jpg'),
-//     paymentInformation: '$5.0/ Per Sale',
-//   },
-//   {
-//     id: 3,
-//     title: 'Up to 50% off !',
-//     description: 'This is description of the first advertisement',
-//     image: require('../assets/singer.png'),
-//     paymentInformation: '$20.0/ Per Sale',
-//   },
-//   {
-//     id: 4,
-//     title: 'Up to 50% off !',
-//     description: 'This is description of the first advertisement',
-//     image: require('../assets/singer.png'),
-//     paymentInformation: '$20.0/ Per Sale',
-//   },
-//   {
-//     id: 5,
-//     title: 'Daraz.lk Fashion week',
-//     description: 'This is description of the second advertisement',
-//     image: require('../assets/daraz.jpg'),
-//     paymentInformation: '$5.0/ Per Sale',
-//   },
-// ]
-
 export default function ViewAdsScreen({ navigation }) {
   const [data, setData] = useState()
   //const [image, setImage] = useState()
@@ -70,10 +31,6 @@ export default function ViewAdsScreen({ navigation }) {
         console.log(error)
       })
   }, [])
-
-  // var delay = 15000
-  // setTimeout(() => {
-  // }, delay)
 
   const openMenu = () => setVisible(true)
 

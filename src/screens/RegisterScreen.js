@@ -13,13 +13,15 @@ import { AuthContext } from '../helpers/Utils'
 export default function RegisterScreen({ route, navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
 
-  const onGetOtpPressed = () => {
+  const { signIn } = React.useContext(AuthContext)
+  const { phoneNumber } = route.params
+  function onGetOtpPressed() {
     const nameError = nameValidator(name.value)
     if (nameError) {
       setName({ ...name, error: nameError })
       return
     }
-    const { phoneNumber } = route.params
+
     console.log(phoneNumber)
     //API connection
     var axios = require('axios')
@@ -44,8 +46,10 @@ export default function RegisterScreen({ route, navigation }) {
       .catch(function (error) {
         console.log(error)
       })
+  }
 
-    // navigation.navigate('ViewAdsScreen')
+  function onLoginPressed() {
+    signIn({ phoneNumber, otpInput })
   }
 
   return (
@@ -62,7 +66,10 @@ export default function RegisterScreen({ route, navigation }) {
 
       <Button
         mode="contained"
-        onPress={onGetOtpPressed}
+        onPress={() => {
+          onGetOtpPressed()
+          onLoginPressed()
+        }}
         style={{ marginTop: 24 }}
       >
         Create Account

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Button as PaperButton } from 'react-native-paper'
 import OTPTextView from 'react-native-otp-textinput'
 import Background from '../components/Background'
@@ -12,55 +13,10 @@ export default function OTPScreen({ route, navigation }) {
 
   const { phoneNumber } = route.params
   const { signIn } = React.useContext(AuthContext)
+
   function onLoginPressed() {
-    signIn(phoneNumber, otpInput)
+    signIn({ phoneNumber, otpInput })
   }
-
-  function handleOtpVerify() {
-    var axios = require('axios')
-    var data = JSON.stringify({
-      phoneNumber: phoneNumber,
-      otp: otpInput,
-    })
-
-    var config = {
-      method: 'post',
-      url: 'http://10.0.2.2:3000/auth/otp',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: data,
-    }
-
-    axios(config)
-      .then(function (response) {
-        let responseNumber = response.data.phoneNumber
-        let userToken = response.data.accessToken
-        let isNewUser = response.data.isNewUser
-        console.log('new user: ' + isNewUser)
-        if (responseNumber) {
-          if (isNewUser === true) {
-            navigation.navigate('RegisterScreen', {
-              phoneNumber: phoneNumber,
-            })
-          } else {
-            console.log('You are loged In')
-            console.log(userToken)
-          }
-        }
-      })
-      .catch(function (error) {
-        setErr(error)
-        console.log(error)
-      })
-  }
-
-  // const clear = () => {
-  //   this.input1.clear()
-  // }
-  // const updateOtpText = () => {
-  //   this.input1.setValue(this.state.inputText)
-  // }
 
   return (
     <Background>
@@ -89,7 +45,7 @@ export default function OTPScreen({ route, navigation }) {
           <PaperButton
             mode="contained"
             onPress={() => {
-              handleOtpVerify()
+              // handleOtpVerify()
               onLoginPressed()
             }}
             uppercase={true}

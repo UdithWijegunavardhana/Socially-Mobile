@@ -94,7 +94,6 @@ const Transactions = [
 const TransactionScreen = ({ navigation }) => {
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState()
 
   return (
     <SafeAreaView style={{ backgroundColor: theme.colors.white }}>

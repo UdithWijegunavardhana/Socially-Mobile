@@ -3,9 +3,7 @@ import { StyleSheet, Image, Text } from 'react-native'
 import Background from '../components/Background'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
-import { theme } from '../core/theme'
 import { phoneNumberValidator } from '../helpers/PhoneNumberValidator'
-import { AuthContext } from '../helpers/Utils'
 
 export default function LoginScreen({ navigation }) {
   const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
@@ -34,7 +32,7 @@ export default function LoginScreen({ navigation }) {
     axios(config)
       .then(function (response) {
         let IsOtpSend = JSON.stringify(response.data.IsOtpSend)
-        console.log('OTP send : '+IsOtpSend)
+        console.log('OTP send : ' + IsOtpSend)
         navigation.navigate('OTPScreen', {
           // screen: 'OTPScreen',
           IsOtpSend: IsOtpSend,
@@ -63,14 +61,6 @@ export default function LoginScreen({ navigation }) {
       <Button mode="contained" onPress={onLoginPressed}>
         Get OTP
       </Button>
-      {/* <Button 
-        mode="outlined" 
-        onPress={() => navigation.navigate('RegisterScreen')}
-        height={7}
-        width={2}
-      >
-        New User
-      </Button> */}
     </Background>
   )
 }

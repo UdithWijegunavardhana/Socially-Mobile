@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import {
   SplashScreen,
   LoginScreen,
@@ -15,7 +16,6 @@ import { IconButton } from 'react-native-paper'
 import * as SecureStore from 'expo-secure-store'
 import { theme } from '../core/theme'
 import { AuthContext } from '../helpers/Utils'
-import * as FileSystem from 'expo-file-system';
 
 const AuthStack = createStackNavigator()
 function StackAuth({ navigation }) {
@@ -114,6 +114,77 @@ function StackApp({ navigation }) {
 const Stack = createStackNavigator()
 
 export default function NavStack({ navigation }) {
+  const [token, setToken] = useState('')
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (data) => {
+        var axios = require('axios')
+        var data = JSON.stringify({
+          phoneNumber: data.phoneNumber,
+          otp: data.otpInput,
+        })
+
+        var config = {
+          method: 'post',
+          url: 'http://10.0.2.2:3000/auth/otp',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: data,
+        }
+
+        axios(config)
+          .then(function (response) {
+            let responseNumber = response.data.phoneNumber
+            let userToken = response.data.accessToken
+            setToken(userToken)
+            let isNewUser = response.data.isNewUser
+            console.log('new user: ' + isNewUser)
+
+            if (responseNumber) {
+              if (isNewUser === true) {
+                navigation.navigate('RegisterScreen', {
+                  phoneNumber: responseNumber,
+                })
+              } else {
+                console.log('OTP Screen Process Success')
+              }
+            }
+          })
+          .catch(function (error) {
+            // setErr( error )
+            console.log(error)
+          })
+        console.log('userToken: ' + token)
+        try {
+          await AsyncStorage.setItem('token', token)
+        } catch (err) {
+          console.log(err)
+        }
+        dispatch({ type: 'SIGN_IN', token: token })
+      },
+      signOut: () => dispatch({ type: 'SIGN_OUT' }),
+      signUp: async (data) => {
+        dispatch({ type: 'SIGN_IN', token: userToken })
+      },
+    }),
+    []
+  )
+
+  React.useEffect(() => {
+    const bootstrapAsync = async () => {
+      let userToken
+      try {
+        userToken = await SecureStore.getItemAsync('token')
+        console.log('Token Restored : ' + userToken)
+      } catch (e) {
+        console.log('Restoring token failed')
+      }
+      dispatch({ type: 'RESTORE_TOKEN', token: userToken })
+    }
+    bootstrapAsync()
+  }, [])
+
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -126,7 +197,9 @@ export default function NavStack({ navigation }) {
         case 'SIGN_IN':
           if (action.token) {
             SecureStore.setItemAsync('userToken', action.token)
-          }else{
+            console.log('Auth Flow is SUCCESS. Token:', action.token)
+            console.log('Staete:' + action.token)
+          } else {
             console.log('no token stored in secure store')
           }
           return {
@@ -149,39 +222,6 @@ export default function NavStack({ navigation }) {
       isSignout: false,
       userToken: null,
     }
-  )
-
-  React.useEffect(() => {
-    const bootstrapAsync = async () => {
-      let userToken
-      try {
-        userToken = await SecureStore.getItemAsync('userToken')
-      } catch (e) {
-        console.log("Restoring token failed") // Restoring token failed
-      }
-      // After restoring token, we may need to validate it in production apps
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken })
-    }
-    bootstrapAsync()
-  }, [])
-
-  const authContext = React.useMemo(
-    () => ({
-      signIn: async (data) => {
-        // const userToken=data.userToken
-        // In a production app, we need to send some data (usually username, password) to server and get a token
-        // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `SecureStore`
-        dispatch({ type: 'SIGN_IN', token: 'userToken'})
-      },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
-      signUp: async (data) => {
-        dispatch({ type: 'SIGN_IN', token: userToken })
-      },
-    }),
-    []
   )
 
   return (
