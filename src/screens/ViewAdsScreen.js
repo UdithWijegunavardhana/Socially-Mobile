@@ -3,7 +3,6 @@ import { View, StyleSheet, SafeAreaView, FlatList } from 'react-native'
 import Constants from 'expo-constants'
 import { filter } from 'lodash'
 import { Searchbar, IconButton, Menu, Divider } from 'react-native-paper'
-import { AuthContext } from '../helpers/Utils'
 import { theme } from './../core/theme'
 import AppCard from '../components/AppCard'
 
@@ -24,7 +23,6 @@ export default function ViewAdsScreen({ navigation }) {
   useEffect(() => {
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data))
         setData(response.data)
       })
       .catch(function (error) {

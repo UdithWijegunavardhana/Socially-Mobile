@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Button as PaperButton } from 'react-native-paper'
 import OTPTextView from 'react-native-otp-textinput'
 import Background from '../components/Background'

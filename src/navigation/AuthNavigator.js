@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import {
   SplashScreen,
   LoginScreen,
@@ -93,14 +92,14 @@ function StackApp({ navigation }) {
           title: 'Edit Account',
         })}
       />
-      <AuthStack.Screen
+      <AppStack.Screen
         name="Paymentsscreen"
         component={Paymentsscreen}
         options={({ navigation }) => ({
           title: 'Withdraw',
         })}
       />
-      <AuthStack.Screen
+      <AppStack.Screen
         name="TransactionScreen"
         component={TransactionScreen}
         options={({ navigation }) => ({
@@ -155,9 +154,8 @@ export default function NavStack({ navigation }) {
             // setErr( error )
             console.log(error)
           })
-        console.log('userToken: ' + token)
         try {
-          await AsyncStorage.setItem('token', token)
+          await SecureStore.setItemAsync('userToken', token)
         } catch (err) {
           console.log(err)
         }
@@ -175,7 +173,7 @@ export default function NavStack({ navigation }) {
     const bootstrapAsync = async () => {
       let userToken
       try {
-        userToken = await SecureStore.getItemAsync('token')
+        userToken = await SecureStore.getItemAsync('userToken')
         console.log('Token Restored : ' + userToken)
       } catch (e) {
         console.log('Restoring token failed')
@@ -197,8 +195,6 @@ export default function NavStack({ navigation }) {
         case 'SIGN_IN':
           if (action.token) {
             SecureStore.setItemAsync('userToken', action.token)
-            console.log('Auth Flow is SUCCESS. Token:', action.token)
-            console.log('Staete:' + action.token)
           } else {
             console.log('no token stored in secure store')
           }

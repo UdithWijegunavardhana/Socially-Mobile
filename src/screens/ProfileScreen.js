@@ -6,69 +6,52 @@ import { Avatar, Divider } from 'react-native-paper'
 import Icontext from '../components/IconText'
 import Apptext from '../components/AppText'
 import Icontextbutton from '../components/IconTextButton'
-import { StripeProvider, useStripe, Alert } from '@stripe/stripe-react-native'
 import { AuthContext } from '../helpers/Utils'
+import * as SecureStore from 'expo-secure-store'
 
-function Stripe() {
-  return (
-    <StripeProvider
-      publishableKey="pk_test_51JvHR3ID7bnBPNMMnJhLGQ6iIb4CSwUPc6YYB0ZDbs6qq32QX3h9TE4X6CeBGNAUtq73gWuXYCTm40GPUdHwIO4E00Eg2iQWf6"
-      urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
-      merchantIdentifier="merchant.com.{{YOUR_APP_NAME}}" // required for Apple Pay
-    >
-      // Your app code here
-    </StripeProvider>
-  )
-}
+// function Stripe() {
+//   return (
+//     <StripeProvider
+//       publishableKey="pk_test_51JvHR3ID7bnBPNMMnJhLGQ6iIb4CSwUPc6YYB0ZDbs6qq32QX3h9TE4X6CeBGNAUtq73gWuXYCTm40GPUdHwIO4E00Eg2iQWf6"
+//       urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
+//       merchantIdentifier="merchant.com.{{YOUR_APP_NAME}}" // required for Apple Pay
+//     >
+//       // Your app code here
+//     </StripeProvider>
+//   )
+// }
 
 const Profilescreen = ({ navigation }) => {
-  // const { initPaymentSheet, presentPaymentSheet } = useStripe()
-  // const [loading, setLoading] = useState(false)
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
 
-  // const fetchPaymentSheetParams = async () => {
-  //   const response = await fetch(`${API_URL}/checkout`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //   const { paymentIntent, ephemeralKey, customer } = await response.json()
-  //   return {
-  //     paymentIntent,
-  //     ephemeralKey,
-  //     customer,
-  //   }
-  // }
+  useEffect(() => {
+    getData()
+  }, [])
 
-  // const initializePaymentSheet = async () => {
-  //   const { paymentIntent, ephemeralKey, customer, publishableKey } =
-  //     await fetchPaymentSheetParams()
+  const getData = async() => {
 
-  //   const { error } = await initPaymentSheet({
-  //     customerId: ephemeralKey.customer,
-  //     customerEphemeralKeySecret: ephemeralKey,
-  //     paymentIntentClientSecret: paymentIntent,
-  //     // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
-  //     //methods that complete payment after a delay, like SEPA Debit and Sofort.
-  //     allowsDelayedPaymentMethods: true,
-  //   })
-  //   if (!error) {
-  //     setLoading(true)
-  //   }
-  // }
+    let userToken = await SecureStore.getItemAsync('userToken') 
+    var axios = require('axios')
 
-  // const openPaymentSheet = async () => {
-  //   const { error } = await presentPaymentSheet()
-  //   if (error) {
-  //     console.log(`Error code: ${error.code}`, error.message)
-  //   } else {
-  //     console.log('Success', 'Your order is confirmed!')
-  //   }
-  // }
+    var config = {
+      method: 'get',
+      url: 'http://10.0.2.2:3000/publisher',
+      headers: {
+        "Authorization":  `Bearer ${userToken}`
+      },
+    }
 
-  // useEffect(() => {
-  //   initializePaymentSheet()
-  // }, [])
+    axios(config)
+      .then(function (response) {
+        const data = JSON.stringify(response.data)
+        setName(response.data.name)
+        setPhone(response.data.phoneNumber)
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+  }
 
   const { signOut } = React.useContext(AuthContext)
   return (
@@ -80,21 +63,21 @@ const Profilescreen = ({ navigation }) => {
           <Avatar.Image size={127} source={require('../assets/avatar.jpg')} />
         </View>
         <View style={styles.userData}>
-          <Apptext children="Jhone S. Mathew" style={styles.userName} />
+          <Apptext children={name} style={styles.userName} />
           <Icontext
             name="phone"
-            text="+94 72 2388 200"
+            text={phone}
             size={20}
             iconColor={theme.colors.medium}
             style={styles.iconText}
           />
-          <Icontext
+          {/* <Icontext
             name="map-marker"
             text="Sri Lanka"
             size={20}
             iconColor={theme.colors.medium}
             style={styles.iconText}
-          />
+          /> */}
         </View>
       </View>
       <Divider style={{ color: 'black' }} />
@@ -146,6 +129,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 28,
     fontWeight: '700',
+    marginBottom: 10,
   },
   userData: {
     marginLeft: 20,
