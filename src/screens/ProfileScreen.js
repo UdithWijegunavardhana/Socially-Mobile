@@ -8,6 +8,7 @@ import Apptext from '../components/AppText'
 import Icontextbutton from '../components/IconTextButton'
 import { AuthContext } from '../helpers/Utils'
 import * as SecureStore from 'expo-secure-store'
+import { API } from '../navigation/host'
 
 // function Stripe() {
 //   return (
@@ -30,13 +31,13 @@ const Profilescreen = ({ navigation }) => {
   }, [])
 
   const getData = async() => {
-
+    const host = API.host
     let userToken = await SecureStore.getItemAsync('userToken') 
     var axios = require('axios')
 
     var config = {
       method: 'get',
-      url: 'http://10.0.2.2:3000/publisher',
+      url: (API.host+'/publisher'),
       headers: {
         "Authorization":  `Bearer ${userToken}`
       },

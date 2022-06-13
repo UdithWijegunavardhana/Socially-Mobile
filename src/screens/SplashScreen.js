@@ -1,12 +1,10 @@
 import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, ActivityIndicator } from 'react-native'
 
 const SplashScreen = () => {
   return (
-    <View>
-      <Text style={{ alignItems: 'center', justifyContent: 'center' }}>
-        SplashScreen
-      </Text>
+    <View style = {{flex:1, justifyContent:'center', alignItems:'center'}}>
+      <ActivityIndicator size="large"/>
     </View>
   )
 }

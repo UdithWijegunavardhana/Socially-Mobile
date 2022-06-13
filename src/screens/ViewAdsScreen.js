@@ -5,22 +5,53 @@ import { filter } from 'lodash'
 import { Searchbar, IconButton, Menu, Divider } from 'react-native-paper'
 import { theme } from './../core/theme'
 import AppCard from '../components/AppCard'
+import { onShare } from '../services/ShareService'
+import { API } from '../navigation/host'
 
 export default function ViewAdsScreen({ navigation }) {
+  var axios = require('axios')
   const [data, setData] = useState()
   //const [image, setImage] = useState()
   const [searchQuery, setSearchQuery] = useState('')
   const [visible, setVisible] = useState(false)
 
+   const onShareAd = () =>{
+
+    var axios = require('axios');
+    var data = JSON.stringify({
+      "creativeId": "1"
+    });
+
+    var config = {
+      method: 'get',
+      url: (API.host+'/share/1'),
+      headers: { 
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA3MjIzODgyMDAiLCJpZCI6MiwiaWF0IjoxNjU1MDk0MzE3LCJleHAiOjE2NTUwOTc5MTd9.0STBZ9QFqIvigDcLOR35HBcS1ahiCwOp_93ml8Hp2Hc', 
+        'Content-Type': 'application/json'
+      },
+      data : data
+    };
+
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    const url = (API.host+'/share/1')
+    onShare('My App', 'Hello check this amazing discount!', url)
+   }
   //API Connection - creative data
-  var axios = require('axios')
-  var config = {
-    method: 'get',
-    url: 'http://10.0.2.2:3000/creative',
-    headers: {},
-  }
+
 
   useEffect(() => {
+  var config = {
+    method: 'get',
+    url:(API.host+'/creative'),
+    headers: {},
+  }
     axios(config)
       .then(function (response) {
         setData(response.data)
@@ -101,6 +132,7 @@ export default function ViewAdsScreen({ navigation }) {
             title={item.creativeHeading}
             description={item.creativeDescription}
             paymentInformation={'$ ' + item.costPerSale + ' / Per Sale'}
+            onPress = {onShareAd}
           />
         )}
       />

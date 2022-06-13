@@ -113,10 +113,15 @@ function StackApp({ navigation }) {
 const Stack = createStackNavigator()
 
 export default function NavStack({ navigation }) {
-  const [token, setToken] = useState('')
+
+
+  const [isNewUser, setIsNewUser] = useState('')
+  const [loginErr, setLoginErr] = useState('')
+  const [userToken, setUserToken] = useState('')
   const authContext = React.useMemo(
     () => ({
       signIn: async (data) => {
+
         var axios = require('axios')
         var data = JSON.stringify({
           phoneNumber: data.phoneNumber,
@@ -132,36 +137,35 @@ export default function NavStack({ navigation }) {
           data: data,
         }
 
+
         axios(config)
           .then(function (response) {
-            let responseNumber = response.data.phoneNumber
-            let userToken = response.data.accessToken
-            setToken(userToken)
-            let isNewUser = response.data.isNewUser
-            console.log('new user: ' + isNewUser)
-
-            if (responseNumber) {
-              if (isNewUser === true) {
-                navigation.navigate('RegisterScreen', {
-                  phoneNumber: responseNumber,
-                })
-              } else {
-                console.log('OTP Screen Process Success')
-              }
-            }
+              setUserToken(response.data.accessToken)
+              setIsNewUser(response.data.isNewUser)
           })
           .catch(function (error) {
-            // setErr( error )
-            console.log(error)
+            let Err = error.message
+            setLoginErr(Err)
           })
-        try {
-          await SecureStore.setItemAsync('userToken', token)
-        } catch (err) {
-          console.log(err)
-        }
-        dispatch({ type: 'SIGN_IN', token: token })
+          if(!isNewUser){
+            try {
+              await SecureStore.setItemAsync('userToken', userToken)
+            } catch (err) {
+              console.log("Error in Storing :"+err)  
+            }
+            dispatch({ type: 'SIGN_IN', userToken })
+          }else{
+            console.log("Error in Login :"+loginErr);
+          }
+       
       },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
+      signOut: async() => {
+        try {
+          await SecureStore.setItemAsync('userToken')
+        } catch (err) {
+          console.log("Error in storage :"+err)  
+        }
+        dispatch({ type: 'SIGN_OUT' })},
       signUp: async (data) => {
         dispatch({ type: 'SIGN_IN', token: userToken })
       },
@@ -170,18 +174,21 @@ export default function NavStack({ navigation }) {
   )
 
   React.useEffect(() => {
-    const bootstrapAsync = async () => {
-      let userToken
-      try {
-        userToken = await SecureStore.getItemAsync('userToken')
-        console.log('Token Restored : ' + userToken)
-      } catch (e) {
-        console.log('Restoring token failed')
+    setTimeout(()=>{
+      const bootstrapAsync = async () => {
+        let userToken
+        try {
+          userToken = await SecureStore.getItemAsync('userToken')
+          console.log('Token Restored : ' + userToken)
+        } catch (e) {
+          console.log('Restoring token failed')
+        }
+        dispatch({ type: 'RESTORE_TOKEN', token: userToken })
       }
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken })
-    }
-    bootstrapAsync()
+      bootstrapAsync()
+    },1000)   
   }, [])
+
 
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
@@ -193,16 +200,17 @@ export default function NavStack({ navigation }) {
             isLoading: false,
           }
         case 'SIGN_IN':
-          if (action.token) {
-            SecureStore.setItemAsync('userToken', action.token)
-          } else {
-            console.log('no token stored in secure store')
-          }
           return {
             ...prevState,
             isSignout: false,
             userToken: action.token,
           }
+          case 'SIGN_UP':
+            return{
+              ...prevState,
+              isLoading: false,
+              userName:action.userName
+            }
         case 'SIGN_OUT':
           SecureStore.deleteItemAsync('userToken')
           console.log('you are loged out')
@@ -210,6 +218,7 @@ export default function NavStack({ navigation }) {
             ...prevState,
             isSignout: true,
             userToken: null,
+            userName:null
           }
       }
     },
@@ -217,6 +226,7 @@ export default function NavStack({ navigation }) {
       isLoading: true,
       isSignout: false,
       userToken: null,
+      userName:null,
     }
   )
 
