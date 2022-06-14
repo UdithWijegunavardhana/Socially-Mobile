@@ -143,7 +143,7 @@ export default function NavStack({ navigation }) {
               } catch (err) {
                 console.log("Error in Storing :"+err)  
               }
-              dispatch({ type: 'SIGN_IN', userToken,isNewUser  })
+              dispatch({ type: 'SIGN_IN', token:userToken,isNewUser:isNewUser  })
             
           })
           .catch(function (error) {
@@ -159,8 +159,14 @@ export default function NavStack({ navigation }) {
           console.log("Error in storage :"+err)  
         }
         dispatch({ type: 'SIGN_OUT' })},
-      signUp: async (data) => {       
-        dispatch({ type: 'SIGN_UP'})
+      signUp: async (data) => {   
+        let userToken;    
+        try {
+          userToken= await SecureStore.getItemAsync('userToken',userToken)
+        } catch (err) {
+          console.log(err)  
+        }
+        dispatch({ type: 'SIGN_UP',token:userToken})
       },
     }),
     []
@@ -203,6 +209,7 @@ export default function NavStack({ navigation }) {
               ...prevState,
               isSignout: false,
               isNewUser:false,
+              userToken:action.token
             }
         case 'SIGN_OUT':
           SecureStore.deleteItemAsync('userToken')
