@@ -43,10 +43,7 @@ export default function OTPScreen({ route, navigation }) {
         <TouchableOpacity>
           <PaperButton
             mode="contained"
-            onPress={() => {
-              // handleOtpVerify()
-              onLoginPressed()
-            }}
+            onPress={onLoginPressed}
             uppercase={true}
             style={styles.verifyButton}
             labelStyle={{ color: 'white', marginTop: 13 }}
