@@ -7,6 +7,7 @@ import { theme } from './../core/theme'
 import AppCard from '../components/AppCard'
 import { onShare } from '../services/ShareService'
 import { API } from '../navigation/host'
+import * as SecureStore from 'expo-secure-store'
 
 export default function ViewAdsScreen({ navigation }) {
   var axios = require('axios')
@@ -15,7 +16,14 @@ export default function ViewAdsScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [visible, setVisible] = useState(false)
 
-   const onShareAd = () =>{
+   const onShareAd = async() =>{
+
+    let userToken;
+      try{
+        userToken = await SecureStore.getItemAsync('userToken')
+      }catch(e){
+        console.log(e)
+      }
 
     var axios = require('axios');
     var data = JSON.stringify({
@@ -26,8 +34,7 @@ export default function ViewAdsScreen({ navigation }) {
       method: 'get',
       url: (API.host+'/share/1'),
       headers: { 
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA3MjIzODgyMDAiLCJpZCI6MiwiaWF0IjoxNjU1MDk0MzE3LCJleHAiOjE2NTUwOTc5MTd9.0STBZ9QFqIvigDcLOR35HBcS1ahiCwOp_93ml8Hp2Hc', 
-        'Content-Type': 'application/json'
+        'Authorization': `Bearer ${userToken}`
       },
       data : data
     };
