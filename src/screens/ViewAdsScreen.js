@@ -12,14 +12,14 @@ export default function ViewAdsScreen({ navigation }) {
   var axios = require('axios')
   const [data, setData] = useState()
   //const [image, setImage] = useState()
-  const [searchQuery, setSearchQuery] = useState('')
   const [visible, setVisible] = useState(false)
 
-   const onShareAd = async() =>{
+   const onShareAd = async(creativeId) =>{
 
-    let userToken;
+    let userToken,userId;
       try{
         userToken = await SecureStore.getItemAsync('userToken')
+        userId = await SecureStore.getItemAsync('userId')
       }catch(e){
         console.log(e)
       }
@@ -28,10 +28,10 @@ export default function ViewAdsScreen({ navigation }) {
     var data = JSON.stringify({
       "creativeId": "1"
     });
-
+    const url = (`http://10.0.2.2:3000/share?creative_id=${encodeURIComponent(creativeId)}&user_id=${encodeURIComponent(userId)}&cookie_id=`)
     var config = {
       method: 'get',
-      url: (API.host+'/share/1'),
+      url,
       headers: { 
         'Authorization': `Bearer ${userToken}`
       },
@@ -45,8 +45,8 @@ export default function ViewAdsScreen({ navigation }) {
     .catch(function (error) {
       console.log(error);
     });
+    console.log(creativeId)
 
-    const url = (API.host+'/share/1')
     onShare('My App', 'Hello check this amazing discount!', url)
    }
   //API Connection - creative data
@@ -78,7 +78,6 @@ export default function ViewAdsScreen({ navigation }) {
         return contains(creative, formatedData)
       })
       setData(filterData)
-      setSearchQuery(formatedData)
     } else {
       setData(data)
     }
@@ -138,7 +137,7 @@ export default function ViewAdsScreen({ navigation }) {
             title={item.creativeHeading}
             description={item.creativeDescription}
             paymentInformation={'$ ' + item.costPerSale + ' / Per Sale'}
-            onPress = {onShareAd}
+            onPress = {() => {onShareAd(item.creativeId)}}
           />
         )}
       />

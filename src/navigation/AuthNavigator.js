@@ -136,9 +136,10 @@ export default function NavStack({ navigation }) {
           .then(async function (response) {
             let userToken = response.data.accessToken
             let isNewUser = response.data.isNewUser
-  
+            let id = response.data.id
               try {
                 await SecureStore.setItemAsync('userToken', userToken)
+                await SecureStore.setItemAsync('userId',id.toString())
                 console.log("User Token : "+userToken)
               } catch (err) {
                 console.log("Error in Storing :"+err)  
