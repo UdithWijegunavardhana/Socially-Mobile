@@ -63,14 +63,6 @@ export default function LoginScreen({ navigation }) {
       <Button mode="contained" onPress={onLoginPressed}>
         Get OTP
       </Button>
-      {/* <Button 
-        mode="outlined" 
-        onPress={() => navigation.navigate('RegisterScreen')}
-        height={7}
-        width={2}
-      >
-        New User
-      </Button> */}
     </Background>
   )
 }

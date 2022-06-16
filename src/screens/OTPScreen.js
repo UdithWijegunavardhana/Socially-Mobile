@@ -49,7 +49,7 @@ export default function OTPScreen({ route, navigation }) {
       })
       .catch(function (error) {
         setErr({ error })
-        console.log(error)
+        // console.log(error)
       })
   }
 

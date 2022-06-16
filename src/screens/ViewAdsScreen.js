@@ -29,13 +29,11 @@ export default function ViewAdsScreen({ navigation }) {
       })
       .catch(function (error) {
         console.log(error)
-      })
+      }) 
   }, [])
 
   const openMenu = () => setVisible(true)
-
   const closeMenu = () => setVisible(false)
-
   const onChangeSearch = (searchQuery) => {
     if (searchQuery) {
       const formatedData = searchQuery.toLowerCase()
