@@ -1,30 +1,65 @@
 import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, SafeAreaView, FlatList } from 'react-native'
-import Constants from 'expo-constants'
 import { filter } from 'lodash'
 import { Searchbar, IconButton, Menu, Divider } from 'react-native-paper'
-import { AuthContext } from '../helpers/Utils'
 import { theme } from './../core/theme'
 import AppCard from '../components/AppCard'
+import { onShare } from '../services/ShareService'
+import { API } from '../navigation/host'
+import * as SecureStore from 'expo-secure-store'
 
 export default function ViewAdsScreen({ navigation }) {
+  var axios = require('axios')
   const [data, setData] = useState()
   //const [image, setImage] = useState()
   const [searchQuery, setSearchQuery] = useState('')
   const [visible, setVisible] = useState(false)
 
+   const onShareAd = async() =>{
+
+    let userToken;
+      try{
+        userToken = await SecureStore.getItemAsync('userToken')
+      }catch(e){
+        console.log(e)
+      }
+
+    var axios = require('axios');
+    var data = JSON.stringify({
+      "creativeId": "1"
+    });
+
+    var config = {
+      method: 'get',
+      url: (API.host+'/share/1'),
+      headers: { 
+        'Authorization': `Bearer ${userToken}`
+      },
+      data : data
+    };
+
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    const url = (API.host+'/share/1')
+    onShare('My App', 'Hello check this amazing discount!', url)
+   }
   //API Connection - creative data
-  var axios = require('axios')
-  var config = {
-    method: 'get',
-    url: 'http://localhost:3000/creative-preview',
-    headers: {},
-  }
+
 
   useEffect(() => {
+  var config = {
+    method: 'get',
+    url:(API.host+'/creative'),
+    headers: {},
+  }
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data))
         setData(response.data)
       })
       .catch(function (error) {
@@ -103,6 +138,7 @@ export default function ViewAdsScreen({ navigation }) {
             title={item.creativeHeading}
             description={item.creativeDescription}
             paymentInformation={'$ ' + item.costPerSale + ' / Per Sale'}
+            onPress = {onShareAd}
           />
         )}
       />

@@ -7,10 +7,9 @@ import Apptext from './AppText'
 // import { ShareService } from './../services/ShareService'
 import { onShare } from './../services/ShareService'
 
-const AppCard = ({ image, title, description, paymentInformation }) => {
+const AppCard = ({ image, title, description, paymentInformation,onPress }) => {
   const onShared = () => {
-    const url = 'https://youtu.be/D6xkbGLQesk'
-    onShare('My App', 'Hello check this amazing discount!', url)
+
   }
   return (
     <Card style={styles.container} mode="elevated">
@@ -36,7 +35,7 @@ const AppCard = ({ image, title, description, paymentInformation }) => {
           uppercase={false}
           style={styles.shareButton}
           labelStyle={{ fontSize: 22, lineHeight: 15 }}
-          onPress={onShared}
+          onPress={onPress}
         >
           <Text style={{ fontSize: 14 }}>Share</Text>
         </Button>
