@@ -265,7 +265,7 @@ export default function NavStack({ navigation }) {
         <Stack.Screen name="Splash" component={SplashScreen} />
       ) 
       : 
-      state.userToken != null?
+      state.userToken != null&& !state.isNewUser?
       (
         <>
           <Stack.Screen name="ViewAdsScreen" component={StackApp} />

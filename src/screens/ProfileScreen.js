@@ -51,7 +51,7 @@ const Profilescreen = ({ navigation }) => {
       })
       .catch(function (error) {
         console.log(error);
-      })
+      })    
   }
 
   const { signOut } = React.useContext(AuthContext)

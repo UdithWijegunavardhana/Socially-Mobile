@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, SafeAreaView, FlatList } from 'react-native'
-import Constants from 'expo-constants'
 import { filter } from 'lodash'
 import { Searchbar, IconButton, Menu, Divider } from 'react-native-paper'
 import { theme } from './../core/theme'
