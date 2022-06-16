@@ -3,18 +3,24 @@ import { StyleSheet, Image, Text } from 'react-native'
 import Background from '../components/Background'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
-import { theme } from '../core/theme'
 import { phoneNumberValidator } from '../helpers/PhoneNumberValidator'
-import { AuthContext } from '../helpers/Utils'
+import {API} from '../navigation/host'
+import * as SecureStore from 'expo-secure-store'
 
 export default function LoginScreen({ navigation }) {
   const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
-
-  const onLoginPressed = () => {
+  const url = API.host+'/auth/phone'
+  const onLoginPressed = async() => {
     const phoneNumberError = phoneNumberValidator(phoneNumber.value)
     if (phoneNumberError) {
       setPhoneNumber({ ...phoneNumber, error: phoneNumberError })
       return
+    }
+    try {
+      await SecureStore.setItemAsync('phoneNumber', phoneNumber.value)
+      console.log("Phone Number: "+phoneNumber.value)
+    } catch (err) {
+      console.log("Error in Storing Phone Number:"+err)  
     }
     //API connection
     var axios = require('axios')
@@ -24,7 +30,7 @@ export default function LoginScreen({ navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://localhost:3000/auth/phone',
+      url,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -34,7 +40,7 @@ export default function LoginScreen({ navigation }) {
     axios(config)
       .then(function (response) {
         let IsOtpSend = JSON.stringify(response.data.IsOtpSend)
-        console.log('OTP send : '+IsOtpSend)
+        console.log('OTP send : ' + IsOtpSend)
         navigation.navigate('OTPScreen', {
           // screen: 'OTPScreen',
           IsOtpSend: IsOtpSend,

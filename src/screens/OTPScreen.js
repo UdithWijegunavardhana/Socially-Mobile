@@ -13,56 +13,9 @@ export default function OTPScreen({ route, navigation }) {
   const { phoneNumber } = route.params
   const { signIn } = React.useContext(AuthContext)
 
-  function handleOtpVerify() {
-    var axios = require('axios')
-    var data = JSON.stringify({
-      phoneNumber: phoneNumber,
-      otp: otpInput,
-    })
-
-    var config = {
-      method: 'post',
-      url: 'http://localhost:3000/auth/otp',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: data,
-    }
-
-    axios(config)
-      .then(function (response) {
-        let responseNumber = response.data.phoneNumber
-        let userToken = response.data.accessToken
-        let isNewUser = response.data.isNewUser
-        console.log('new user: ' + isNewUser)
-        if (responseNumber) {
-          if (isNewUser === true) {
-            navigation.navigate('RegisterScreen', {
-              phoneNumber: phoneNumber,
-            })
-          } else {
-            console.log('OTP Screen Process Success')
-            console.log('userToken: ' + userToken)
-            // setUserToken(userToken)
-          }
-        }
-      })
-      .catch(function (error) {
-        setErr({ error })
-        // console.log(error)
-      })
-  }
-
   function onLoginPressed() {
     signIn({ phoneNumber, otpInput })
   }
-
-  // const clear = () => {
-  //   this.input1.clear()
-  // }
-  // const updateOtpText = () => {
-  //   this.input1.setValue(this.state.inputText)
-  // }
 
   return (
     <Background>
@@ -90,10 +43,7 @@ export default function OTPScreen({ route, navigation }) {
         <TouchableOpacity>
           <PaperButton
             mode="contained"
-            onPress={() => {
-              handleOtpVerify()
-              onLoginPressed()
-            }}
+            onPress={onLoginPressed}
             uppercase={true}
             style={styles.verifyButton}
             labelStyle={{ color: 'white', marginTop: 13 }}

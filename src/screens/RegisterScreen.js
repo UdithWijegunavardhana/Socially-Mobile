@@ -9,30 +9,35 @@ import { theme } from '../core/theme'
 import { nameValidator } from '../helpers/nameValidator'
 import OTPScreen from './OTPScreen'
 import { AuthContext } from '../helpers/Utils'
+import * as SecureStore from 'expo-secure-store'
 
 export default function RegisterScreen({ route, navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
+  const { signUp } = React.useContext(AuthContext)
 
-  const { signIn } = React.useContext(AuthContext)
-  const { phoneNumber } = route.params
-  function onGetOtpPressed() {
+  async function onLoginPressed() {
     const nameError = nameValidator(name.value)
     if (nameError) {
       setName({ ...name, error: nameError })
       return
     }
+    let phoneNumber;
+    try {
+      phoneNumber = await SecureStore.getItemAsync('phoneNumber')
+    } catch (e) {
+      console.log('Restoring phone Number failed')
+    }
 
-    console.log(phoneNumber)
     //API connection
-    var axios = require('axios')
-    var data = JSON.stringify({
-      userName: name,
+      var axios = require('axios')
+      var data = JSON.stringify({
+      userName: name.value,
       phoneNumber: phoneNumber,
     })
 
     var config = {
       method: 'post',
-      url: 'http://localhost:3000/auth/publisherRegister',
+      url: 'http://10.0.2.2:3000/auth/publisherRegister',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -41,15 +46,14 @@ export default function RegisterScreen({ route, navigation }) {
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data))
+        console.log(JSON.stringify(response.data) )
       })
       .catch(function (error) {
         console.log(error)
       })
-  }
+          
 
-  function onLoginPressed() {
-    signIn({ phoneNumber, otpInput })
+      signUp()
   }
 
   return (
@@ -67,7 +71,6 @@ export default function RegisterScreen({ route, navigation }) {
       <Button
         mode="contained"
         onPress={() => {
-          onGetOtpPressed()
           onLoginPressed()
         }}
         style={{ marginTop: 24 }}

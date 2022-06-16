@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   View,
   StyleSheet,
@@ -12,11 +12,14 @@ import TextInput from '../components/TextInput'
 import Animated from 'react-native-reanimated'
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../components/Button'
-import { BorderlessButton } from 'react-native-gesture-handler'
+import { nameValidator } from './../helpers/nameValidator'
+import * as SecureStore from 'expo-secure-store'
+import {API} from '../navigation/host'
 
 const Editprofilescreen = () => {
+  const [name, setName] = useState({ value: '', error: '' })
   const renderInner = () => <Text>Hello</Text>
-
+  const url = API.host;
   const renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.panelHeader}>
@@ -24,6 +27,37 @@ const Editprofilescreen = () => {
       </View>
     </View>
   )
+
+  const onSubmit = async() => {
+    const nameError = nameValidator(name.value)
+    if (nameError) {
+      setName({ ...name, error: nameError })
+      return
+    }
+    let userToken = await SecureStore.getItemAsync('userToken') 
+    var axios = require('axios')
+    var data = JSON.stringify({
+      userName: name.value,
+    })
+
+    var config = {
+      method: 'put',
+      url: (API.host+'/publisher/update'),
+      headers: {
+        'Authorization':`Bearer ${userToken}`,
+        'Content-Type': 'application/json',
+      },
+      data: data,
+    }
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data))
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
 
   let bs = React.createRef()
   let fall = new Animated.Value(1)
@@ -84,21 +118,18 @@ const Editprofilescreen = () => {
             </View>
           </TouchableOpacity>
           <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>
-            Jhone S. Mathew
+            {name.value}
           </Text>
         </View>
         <View style={styles.action}>
-          <TextInput 
-            label="User Name" 
-            autoCorrect={false} 
-          />
           <TextInput
-            label="Phone Number"
+            label="User Name"
             autoCorrect={false}
-            keyboardType="number-pad"
+            onChangeText={(text) => setName({ value: text, error: '' })}
+            errorText={name.error}
           />
         </View>
-        <Button mode="contained" onPress={() => {}}>
+        <Button mode="contained" onPress={onSubmit}>
           Submit
         </Button>
       </View>
