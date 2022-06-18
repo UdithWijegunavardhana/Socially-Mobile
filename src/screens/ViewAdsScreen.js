@@ -24,7 +24,7 @@ export default function ViewAdsScreen({ navigation }) {
         console.log(e)
       }
 
-    var axios = require('axios');
+    var axios = require('axios')
     var data = JSON.stringify({
       "creativeId": "1"
     });
@@ -35,8 +35,8 @@ export default function ViewAdsScreen({ navigation }) {
       headers: { 
         'Authorization': `Bearer ${userToken}`
       },
-      data : data
-    };
+      data: data,
+    }
 
     axios(config)
     .then(function (response) {
@@ -48,16 +48,14 @@ export default function ViewAdsScreen({ navigation }) {
     console.log(creativeId)
 
     onShare('My App', 'Hello check this amazing discount!', url)
-   }
-  //API Connection - creative data
-
+  }
 
   useEffect(() => {
-  var config = {
-    method: 'get',
-    url:(API.host+'/creative'),
-    headers: {},
-  }
+    var config = {
+      method: 'get',
+      url: API.host + '/creative',
+      headers: {},
+    }
     axios(config)
       .then(function (response) {
         setData(response.data)
@@ -68,9 +66,7 @@ export default function ViewAdsScreen({ navigation }) {
   }, [])
 
   const openMenu = () => setVisible(true)
-
   const closeMenu = () => setVisible(false)
-
   const onChangeSearch = (searchQuery) => {
     if (searchQuery) {
       const formatedData = searchQuery.toLowerCase()

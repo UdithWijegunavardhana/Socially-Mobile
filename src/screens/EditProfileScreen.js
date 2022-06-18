@@ -14,12 +14,12 @@ import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../components/Button'
 import { nameValidator } from './../helpers/nameValidator'
 import * as SecureStore from 'expo-secure-store'
-import {API} from '../navigation/host'
+import { API } from '../navigation/host'
 
 const Editprofilescreen = () => {
   const [name, setName] = useState({ value: '', error: '' })
   const renderInner = () => <Text>Hello</Text>
-  const url = API.host;
+  const url = API.host
   const renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.panelHeader}>
@@ -28,13 +28,13 @@ const Editprofilescreen = () => {
     </View>
   )
 
-  const onSubmit = async() => {
+  const onSubmit = async () => {
     const nameError = nameValidator(name.value)
     if (nameError) {
       setName({ ...name, error: nameError })
       return
     }
-    let userToken = await SecureStore.getItemAsync('userToken') 
+    let userToken = await SecureStore.getItemAsync('userToken')
     var axios = require('axios')
     var data = JSON.stringify({
       userName: name.value,
@@ -42,9 +42,9 @@ const Editprofilescreen = () => {
 
     var config = {
       method: 'put',
-      url: (API.host+'/publisher/update'),
+      url: API.host + '/publisher/update',
       headers: {
-        'Authorization':`Bearer ${userToken}`,
+        Authorization: `Bearer ${userToken}`,
         'Content-Type': 'application/json',
       },
       data: data,
