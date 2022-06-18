@@ -5,16 +5,15 @@ import Button from './Button'
 import { theme } from './../core/theme'
 import Apptext from './AppText'
 
-const AppList = ({ amount, date, time , Type }) => {
-
-  if(Type === 'Withdrawal'){
+const AppList = ({ amount, date, time, Type }) => {
+  if (Type === 'Withdrawal') {
     styles.transactionType = {
       color: theme.colors.error,
       fontSize: 15,
       fontWeight: '500',
       marginTop: -10,
     }
-  }else{
+  } else {
     styles.transactionType = {
       color: theme.colors.primary,
       fontSize: 15,
@@ -53,10 +52,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.white,
     borderRadius: 2,
-    // elevation: 20,
-    // borderBottomColor: theme.colors.primary,
-    // borderBottomWidth: 6,
-    },
+  },
   Card: {
     marginHorizontal: 5,
   },
@@ -78,7 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  amountType:{
+  amountType: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

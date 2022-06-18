@@ -5,7 +5,7 @@ import Button from '../components/Button'
 
 export default function HelpScreen({ navigation }) {
   return (
-    <View>
+    <View style = {{flex:1, justifyContent:'center', alignItems:'center'}}>
       <Text>This is Healp page</Text>
     </View>
   )

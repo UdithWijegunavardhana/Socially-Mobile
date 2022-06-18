@@ -15,56 +15,53 @@ export default function ViewAdsScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [visible, setVisible] = useState(false)
 
-   const onShareAd = async() =>{
+  const onShareAd = async () => {
+    let userToken
+    try {
+      userToken = await SecureStore.getItemAsync('userToken')
+    } catch (e) {
+      console.log(e)
+    }
 
-    let userToken;
-      try{
-        userToken = await SecureStore.getItemAsync('userToken')
-      }catch(e){
-        console.log(e)
-      }
-
-    var axios = require('axios');
+    var axios = require('axios')
     var data = JSON.stringify({
-      "creativeId": "1"
-    });
+      creativeId: '1',
+    })
 
     var config = {
       method: 'get',
-      url: (API.host+'/share/1'),
-      headers: { 
-        'Authorization': `Bearer ${userToken}`
+      url: API.host + '/share/1',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
       },
-      data : data
-    };
+      data: data,
+    }
 
     axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+      .then(function (response) {
+        console.log(JSON.stringify(response.data))
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
 
-    const url = (API.host+'/share/1')
+    const url = API.host + '/share/1'
     onShare('My App', 'Hello check this amazing discount!', url)
-   }
-  //API Connection - creative data
-
+  }
 
   useEffect(() => {
-  var config = {
-    method: 'get',
-    url:(API.host+'/creative'),
-    headers: {},
-  }
+    var config = {
+      method: 'get',
+      url: API.host + '/creative',
+      headers: {},
+    }
     axios(config)
       .then(function (response) {
         setData(response.data)
       })
       .catch(function (error) {
         console.log(error)
-      }) 
+      })
   }, [])
 
   const openMenu = () => setVisible(true)
@@ -136,7 +133,7 @@ export default function ViewAdsScreen({ navigation }) {
             title={item.creativeHeading}
             description={item.creativeDescription}
             paymentInformation={'$ ' + item.costPerSale + ' / Per Sale'}
-            onPress = {onShareAd}
+            onPress={onShareAd}
           />
         )}
       />

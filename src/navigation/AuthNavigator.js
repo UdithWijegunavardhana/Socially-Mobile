@@ -10,11 +10,13 @@ import {
   Editprofilescreen,
   Paymentsscreen,
   TransactionScreen,
+  HelpScreen,
 } from '../screens'
 import { IconButton } from 'react-native-paper'
 import * as SecureStore from 'expo-secure-store'
 import { theme } from '../core/theme'
 import { AuthContext } from '../helpers/Utils'
+import { API } from './host'
 
 const AuthStack = createStackNavigator()
 function StackAuth({ navigation }) {
@@ -106,6 +108,13 @@ function StackApp({ navigation }) {
           title: 'Transaction History',
         })}
       />
+      <AppStack.Screen
+        name="HelpScreen"
+        component={HelpScreen}
+        options={({ navigation }) => ({
+          title: 'Help',
+        })}
+      />
     </AppStack.Navigator>
   )
 }
@@ -113,11 +122,9 @@ function StackApp({ navigation }) {
 const Stack = createStackNavigator()
 
 export default function NavStack({ navigation }) {
-
   const authContext = React.useMemo(
     () => ({
       signIn: async (data) => {
-
         var axios = require('axios')
         var data = JSON.stringify({
           phoneNumber: data.phoneNumber,
@@ -126,7 +133,7 @@ export default function NavStack({ navigation }) {
 
         var config = {
           method: 'post',
-          url: 'http://10.0.2.2:3000/auth/otp',
+          url: API.host + '/auth/otp',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -136,60 +143,61 @@ export default function NavStack({ navigation }) {
           .then(async function (response) {
             let userToken = response.data.accessToken
             let isNewUser = response.data.isNewUser
-  
-              try {
-                await SecureStore.setItemAsync('userToken', userToken)
-                console.log("User Token : "+userToken)
-              } catch (err) {
-                console.log("Error in Storing :"+err)  
-              }
-              dispatch({ type: 'SIGN_IN', token:userToken,isNewUser:isNewUser  })
-            
+
+            try {
+              await SecureStore.setItemAsync('userToken', userToken)
+              console.log('User Token : ' + userToken)
+            } catch (err) {
+              console.log('Error in Storing :' + err)
+            }
+            dispatch({
+              type: 'SIGN_IN',
+              token: userToken,
+              isNewUser: isNewUser,
+            })
           })
           .catch(function (error) {
             let Err = error.message
             console.log(Err)
           })
-       
       },
-      signOut: async() => {
+      signOut: async () => {
         try {
-          await SecureStore.deleteItemAsync('userToken',userToken)
+          await SecureStore.deleteItemAsync('userToken', userToken)
         } catch (err) {
-          console.log("Error in storage :"+err)  
+          console.log('Error in storage :' + err)
         }
-        dispatch({ type: 'SIGN_OUT' })},
-      signUp: async (data) => {   
-        let userToken;    
+        dispatch({ type: 'SIGN_OUT' })
+      },
+      signUp: async (data) => {
+        let userToken
         try {
-          userToken= await SecureStore.getItemAsync('userToken',userToken)
+          userToken = await SecureStore.getItemAsync('userToken', userToken)
         } catch (err) {
-          console.log(err)  
+          console.log(err)
         }
-        dispatch({ type: 'SIGN_UP',token:userToken})
+        dispatch({ type: 'SIGN_UP', token: userToken })
       },
     }),
     []
   )
 
   React.useEffect(() => {
-
-      const bootstrapAsync = async () => {
-        let userToken
-        try {
-          userToken = await SecureStore.getItemAsync('userToken')
-          console.log('Token Restored : ' + userToken)
-        } catch (e) {
-          console.log('Restoring token failed')
-        }
-        dispatch({ type: 'RESTORE_TOKEN', token: userToken })
+    const bootstrapAsync = async () => {
+      let userToken
+      try {
+        userToken = await SecureStore.getItemAsync('userToken')
+        console.log('Token Restored : ' + userToken)
+      } catch (e) {
+        console.log('Restoring token failed')
       }
-      bootstrapAsync()   
+      dispatch({ type: 'RESTORE_TOKEN', token: userToken })
+    }
+    bootstrapAsync()
   }, [])
 
-
   const [state, dispatch] = React.useReducer(
-    (prevState, action) => { 
+    (prevState, action) => {
       switch (action.type) {
         case 'RESTORE_TOKEN':
           return {
@@ -202,15 +210,15 @@ export default function NavStack({ navigation }) {
             ...prevState,
             isSignout: false,
             userToken: action.token,
-            isNewUser:action.isNewUser
-          } 
-          case 'SIGN_UP':
-            return{
-              ...prevState,
-              isSignout: false,
-              isNewUser:false,
-              userToken:action.token
-            }
+            isNewUser: action.isNewUser,
+          }
+        case 'SIGN_UP':
+          return {
+            ...prevState,
+            isSignout: false,
+            isNewUser: false,
+            userToken: action.token,
+          }
         case 'SIGN_OUT':
           SecureStore.deleteItemAsync('userToken')
           SecureStore.deleteItemAsync('phoneNumber')
@@ -219,7 +227,7 @@ export default function NavStack({ navigation }) {
             ...prevState,
             isSignout: true,
             userToken: null,
-            isNewUser:false
+            isNewUser: false,
           }
       }
     },
@@ -231,61 +239,30 @@ export default function NavStack({ navigation }) {
   )
 
   return (
-    // <AuthContext.Provider value={authContext}>
-    //   <Stack.Navigator
-    //     screenOptions={{
-    //       headerShown: false,
-    //     }}
-    //   >
-    //     {state.isLoading ? (
-    //       <Stack.Screen name="Splash" component={SplashScreen} />
-    //     ) : state.userToken == null ? (
-    //       <>
-    //         <Stack.Screen name="SignIn" component={StackAuth} />
-    //       </>
-    //     ) : (
-    //       <>
-    //         <Stack.Screen name="ViewAdsScreen" component={StackApp} />
-    //       </>
-    //     )}
-    //   </Stack.Navigator>
-    // </AuthContext.Provider>
-
-
-
     <AuthContext.Provider value={authContext}>
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      {
-      state.isLoading ? 
-      (
-        <Stack.Screen name="Splash" component={SplashScreen} />
-      ) 
-      : 
-      state.userToken != null&& !state.isNewUser?
-      (
-        <>
-          <Stack.Screen name="ViewAdsScreen" component={StackApp} />
-        </>
-      )
-      :
-      state.isNewUser?( 
-          <Stack.Screen name="RegisterScreen"
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        {state.isLoading ? (
+          <Stack.Screen name="Splash" component={SplashScreen} />
+        ) : state.userToken != null && !state.isNewUser ? (
+          <>
+            <Stack.Screen name="ViewAdsScreen" component={StackApp} />
+          </>
+        ) : state.isNewUser ? (
+          <Stack.Screen
+            name="RegisterScreen"
             component={RegisterScreen}
-            options={{ title: 'Register' }}/>
-      )
-      : 
-      (
-      <>
-        <Stack.Screen name="SignIn" component={StackAuth} />
-      </>
-      )
-        
-      }
-    </Stack.Navigator>
-  </AuthContext.Provider>
+            options={{ title: 'Register' }}
+          />
+        ) : (
+          <>
+            <Stack.Screen name="SignIn" component={StackAuth} />
+          </>
+        )}
+      </Stack.Navigator>
+    </AuthContext.Provider>
   )
 }
