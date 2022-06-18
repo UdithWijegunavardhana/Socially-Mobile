@@ -12,40 +12,41 @@ export default function ViewAdsScreen({ navigation }) {
   var axios = require('axios')
   const [data, setData] = useState()
   //const [image, setImage] = useState()
-  const [searchQuery, setSearchQuery] = useState('')
   const [visible, setVisible] = useState(false)
 
-  const onShareAd = async () => {
-    let userToken
-    try {
-      userToken = await SecureStore.getItemAsync('userToken')
-    } catch (e) {
-      console.log(e)
-    }
+   const onShareAd = async(creativeId) =>{
+
+    let userToken,userId;
+      try{
+        userToken = await SecureStore.getItemAsync('userToken')
+        userId = await SecureStore.getItemAsync('userId')
+      }catch(e){
+        console.log(e)
+      }
 
     var axios = require('axios')
     var data = JSON.stringify({
-      creativeId: '1',
-    })
-
+      "creativeId": "1"
+    });
+    const url = (`http://10.0.2.2:3000/share?creative_id=${encodeURIComponent(creativeId)}&user_id=${encodeURIComponent(userId)}&cookie_id=`)
     var config = {
       method: 'get',
-      url: API.host + '/share/1',
-      headers: {
-        Authorization: `Bearer ${userToken}`,
+      url,
+      headers: { 
+        'Authorization': `Bearer ${userToken}`
       },
       data: data,
     }
 
     axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data))
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    console.log(creativeId)
 
-    const url = API.host + '/share/1'
     onShare('My App', 'Hello check this amazing discount!', url)
   }
 
@@ -73,7 +74,6 @@ export default function ViewAdsScreen({ navigation }) {
         return contains(creative, formatedData)
       })
       setData(filterData)
-      setSearchQuery(formatedData)
     } else {
       setData(data)
     }
@@ -133,7 +133,7 @@ export default function ViewAdsScreen({ navigation }) {
             title={item.creativeHeading}
             description={item.creativeDescription}
             paymentInformation={'$ ' + item.costPerSale + ' / Per Sale'}
-            onPress={onShareAd}
+            onPress = {() => {onShareAd(item.creativeId)}}
           />
         )}
       />
