@@ -1,27 +1,34 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, Text, Image } from 'react-native'
-import { CardField, useStripe , useConfirmPayment } from '@stripe/stripe-react-native'
+import {
+  CardField,
+  useStripe,
+  useConfirmPayment,
+} from '@stripe/stripe-react-native'
 import { StripeProvider } from '@stripe/stripe-react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { theme } from '../core/theme'
-import { Button } from 'react-native-paper'
+import { Button, TextInput } from 'react-native-paper'
 import Apptext from '../components/AppText'
-import TextInput from '../components/TextInput'
-
-function App() {
-  return (
-    <StripeProvider
-      publishableKey="pk_test_51JvHR3ID7bnBPNMMnJhLGQ6iIb4CSwUPc6YYB0ZDbs6qq32QX3h9TE4X6CeBGNAUtq73gWuXYCTm40GPUdHwIO4E00Eg2iQWf6"
-      urlScheme="your-url-scheme" 
-      merchantIdentifier="merchant.com.{{YOUR_APP_NAME}}" 
-    >
-    </StripeProvider>
-  )
-}
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { nameValidator } from '../helpers/nameValidator'
 
 const PaymentsScreen = ({ navigation }) => {
+  const [cardHolder, setCardHolder] = useState({ value: '', error: '' })
+  const [amount, setAmount] = useState({ value: '', error: '' })
+  const { confirmPayment, loading } = useConfirmPayment()
 
-  const {confirmPayment, loading} = useConfirmPayment();
+  async function onConfirmPresed() {
+    const cardHolderError = nameValidator(cardHolder.value)
+    if (cardHolderError) {
+      setCardHolder({ ...cardHolder, error: cardHolderError })
+      return
+    }
+    if (amount.value === '' && amount.error <= 10) {
+      setAmount({ ...amount, error: 'Please enter an amount' })
+      return
+    }
+  }
 
   const fetchPaymentIntentClientSecret = async () => {
     const response = await fetch(`${API_URL}/create-payment-intent`, {
@@ -32,34 +39,32 @@ const PaymentsScreen = ({ navigation }) => {
       body: JSON.stringify({
         currency: 'usd',
       }),
-    });
-    const {clientSecret} = await response.json();
-
-    return clientSecret;
-  };
+    })
+    const { clientSecret } = await response.json()
+    return clientSecret
+  }
 
   const handlePayPress = async () => {
     const billingDetails = {
       email: 'jenny.rosen@example.com',
-    };
+    }
 
-    const clientSecret = await fetchPaymentIntentClientSecret();
+    const clientSecret = await fetchPaymentIntentClientSecret()
 
-    const {paymentIntent, error} = await confirmPayment(clientSecret, {
+    const { paymentIntent, error } = await confirmPayment(clientSecret, {
       paymentMethodType: 'Card',
       paymentMethodData: {
         billingDetails,
       },
-    });
+    })
 
     if (error) {
-      console.log('Payment confirmation error', error);
+      console.log('Payment confirmation error', error)
     } else if (paymentIntent) {
-      console.log('Success from promise', paymentIntent);
+      console.log('Success from promise', paymentIntent)
     }
-  };
+  }
 
-  
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
@@ -68,7 +73,7 @@ const PaymentsScreen = ({ navigation }) => {
           style={styles.cardImage}
         />
         <View style={styles.amountSection}>
-          <Apptext style={styles.text}>Amount </Apptext>
+          <Apptext style={styles.text}>Current Amount </Apptext>
           <View style={{ flexDirection: 'row' }}>
             <Apptext children="US$" style={styles.amount} />
             <Apptext children=" 230.00" style={styles.amount} />
@@ -94,11 +99,42 @@ const PaymentsScreen = ({ navigation }) => {
             console.log('focusField', focusedField)
           }}
         />
-        <TextInput
-          label="Card Holder"
-          autoCorrect={false}
-          style={styles.input}
-        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            label="amount  $"
+            autoCorrect={false}
+            style={styles.amountInput}
+            underlineColor={theme.colors.primary}
+            backgroundColor={theme.colors.white}
+            onChangeText={(text) => setCardHolder({ value: text, error: '' })}
+            error={!!cardHolder.error}
+            errorText={cardHolder.error}
+          />
+          <TextInput
+            label="Card Holder"
+            autoCorrect={false}
+            style={styles.cardholderInput}
+            underlineColor={theme.colors.primary}
+            backgroundColor={theme.colors.white}
+            onChangeText={(text) => setAmount({ value: text, error: '' })}
+            error={!!amount.error}
+            errorText={amount.error}
+          />
+        </View>
+
+        <View
+          style={{ flexDirection: 'row', marginLeft: '8%', marginBottom: 25 }}
+        >
+          <MaterialCommunityIcons
+            name="information-outline"
+            size={15}
+            color={theme.colors.medium}
+          />
+          <Text style={{ color: theme.colors.medium, marginLeft: 6 }}>
+            Minimun withdrawal amount : $10
+          </Text>
+        </View>
+
         <Button
           mode="contained"
           uppercase={true}
@@ -107,7 +143,7 @@ const PaymentsScreen = ({ navigation }) => {
           marginBottom={70}
           alignSelf={'center'}
           labelStyle={styles.labelStyle}
-          onPress={handlePayPress}
+          onPress={onConfirmPresed}
           disabled={loading}
         >
           Confirm
@@ -137,7 +173,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignSelf: 'center',
     borderColor: theme.colors.primary,
-    borderWidth: 1,
+    // borderWidth: 1,
     borderRadius: 5,
   },
   labelStyle: {
@@ -149,6 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: theme.colors.primary,
     fontWeight: '700',
+    marginTop: '2%',
   },
   amountSection: {
     marginLeft: '7.5%',
@@ -157,12 +194,30 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: theme.colors.mediumGrey,
   },
-  input: {
-    width: '85%',
-    alignSelf: 'center',
+  amountInput: {
+    width: '45%',
+    alignSelf: 'flex-start',
+    marginLeft: '13%',
     borderColor: theme.colors.primary,
     height: 44,
-    marginBottom: 20,
+    marginBottom: 10,
+  },
+  cardholderInput: {
+    width: '90%',
+    borderBottomColor: theme.colors.primary,
+    borderBottomEndRadius: 5,
+    height: 44,
+    marginBottom: 10,
+    marginLeft: '5%',
+  },
+  iconText: {
+    color: theme.colors.medium,
+    fontSize: 15,
+    paddingHorizontal: 5,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    width: '60%',
   },
 })
 
