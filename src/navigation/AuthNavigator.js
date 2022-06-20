@@ -14,7 +14,6 @@ import {
 } from '../screens'
 import { IconButton } from 'react-native-paper'
 import * as SecureStore from 'expo-secure-store'
-import { theme } from '../core/theme'
 import { AuthContext } from '../helpers/Utils'
 import { API } from './host'
 
@@ -133,7 +132,7 @@ export default function NavStack({ navigation }) {
 
         var config = {
           method: 'post',
-          url: API.host + '/auth/otp',
+          url: (API.host+'auth/otp'),
           headers: {
             'Content-Type': 'application/json',
           },
