@@ -13,8 +13,8 @@ import {
 } from '../screens'
 import { IconButton } from 'react-native-paper'
 import * as SecureStore from 'expo-secure-store'
-import { theme } from '../core/theme'
 import { AuthContext } from '../helpers/Utils'
+import {API} from '../navigation/host'
 
 const AuthStack = createStackNavigator()
 function StackAuth({ navigation }) {
@@ -126,7 +126,7 @@ export default function NavStack({ navigation }) {
 
         var config = {
           method: 'post',
-          url: 'http://10.0.2.2:3000/auth/otp',
+          url: (API.host+'auth/otp'),
           headers: {
             'Content-Type': 'application/json',
           },

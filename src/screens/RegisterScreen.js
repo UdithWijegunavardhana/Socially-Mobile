@@ -7,9 +7,9 @@ import Button from '../components/Button'
 import TextInput from '../components/TextInput'
 import { theme } from '../core/theme'
 import { nameValidator } from '../helpers/nameValidator'
-import OTPScreen from './OTPScreen'
 import { AuthContext } from '../helpers/Utils'
 import * as SecureStore from 'expo-secure-store'
+import {API} from '../navigation/host'
 
 export default function RegisterScreen({ route, navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
@@ -37,7 +37,7 @@ export default function RegisterScreen({ route, navigation }) {
 
     var config = {
       method: 'post',
-      url: 'http://10.0.2.2:3000/auth/publisherRegister',
+      url: (API.host+'auth/publisherRegister'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -51,8 +51,7 @@ export default function RegisterScreen({ route, navigation }) {
       .catch(function (error) {
         console.log(error)
       })
-          
-
+        
       signUp()
   }
 

@@ -37,7 +37,7 @@ const Profilescreen = ({ navigation }) => {
 
     var config = {
       method: 'get',
-      url: (API.host+'/publisher'),
+      url: (API.host+'publisher'),
       headers: {
         "Authorization":  `Bearer ${userToken}`
       },
@@ -60,11 +60,19 @@ const Profilescreen = ({ navigation }) => {
       style={{ padding: 5, backgroundColor: theme.colors.white, flex: 1 }}
     >
       <View style={styles.userInfoSection}>
-        <View style={styles.profileImageContainer}>
-          <Avatar.Image size={127} source={require('../assets/avatar.jpg')} />
-        </View>
         <View style={styles.userData}>
           <Apptext children={name} style={styles.userName} />
+          <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+            <View>
+          <Icontext
+            name="map-marker"
+            text="Sri Lanka"
+            size={20}
+            iconColor={theme.colors.medium}
+            style={styles.iconText}
+          />
+          </View>
+          <View>
           <Icontext
             name="phone"
             text={phone}
@@ -72,23 +80,17 @@ const Profilescreen = ({ navigation }) => {
             iconColor={theme.colors.medium}
             style={styles.iconText}
           />
-          {/* <Icontext
-            name="map-marker"
-            text="Sri Lanka"
-            size={20}
-            iconColor={theme.colors.medium}
-            style={styles.iconText}
-          /> */}
+          </View>
+          </View>
         </View>
       </View>
-      <Divider style={{ color: 'black' }} />
       <View style={styles.earningInfoSection}>
         <Icontext
           name="information-outline"
           text="Estimated Earnings"
           size={15}
           iconColor={theme.colors.medium}
-          style={styles.iconText}
+          style={{color:theme.colors.medium, fontWeight:"500"}}
         />
         <View style={{ flexDirection: 'row' }}>
           <Apptext children="US$" style={styles.amount} />
@@ -105,14 +107,15 @@ const Profilescreen = ({ navigation }) => {
         </Button>
       </View>
       <View style={styles.navigationSection}>
-        <Icontextbutton name="help-circle" title="Help" />
+        <Icontextbutton name="help-circle" title="Help" buttonStyle={{borderBottomColor:theme.colors.medium,borderBottomWidth:1,borderTopColor:theme.colors.medium,borderTopWidth:1}}/>
         <Icontextbutton
           name="bank-transfer"
           title="View Transactions"
           onPress={() => navigation.navigate('TransactionScreen')}
+          buttonStyle={{borderBottomColor:theme.colors.medium,borderBottomWidth:1}}
         />
-        <Icontextbutton name="currency-usd-circle" title="My Earnings" />
-        <Icontextbutton name="logout" title="Log Out" onPress={signOut} />
+        <Icontextbutton name="logout" title="Log Out" onPress={signOut} buttonStyle={{borderBottomColor:theme.colors.medium,borderBottomWidth:1}}/>
+   
       </View>
     </SafeAreaView>
   )
@@ -123,23 +126,27 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   iconText: {
-    color: theme.colors.medium,
-    fontSize: 15,
+    color: theme.colors.dark,
+    fontSize: 17,
     paddingHorizontal: 5,
+    fontWeight:"700"
   },
   userName: {
-    fontSize: 28,
+    fontSize: 25,
     fontWeight: '700',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   userData: {
-    marginLeft: 20,
+    margin: 20,
+    backgroundColor:theme.colors.light,
+    marginHorizontal:3,
+    borderRadius:10,
+    padding:20
   },
   userInfoSection: {
     flex: 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 40,
+    justifyContent:"center",
+    marginBottom: 5,
   },
   earningInfoSection: {
     flex: 2,
@@ -150,7 +157,8 @@ const styles = StyleSheet.create({
   navigationSection: {
     flex: 4,
     flexDirection: 'column',
-    marginTop: '20%',
+    justifyContent:"flex-end",
+    marginBottom:5
   },
   amount: {
     fontSize: 44,
@@ -160,6 +168,8 @@ const styles = StyleSheet.create({
   labelStyle: {
     fontSize: 17,
     fontWeight: '500',
+    marginHorizontal:3,
+    borderRadius:10
   },
   navButton: {},
   navButtonsText: {
