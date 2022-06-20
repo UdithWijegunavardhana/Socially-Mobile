@@ -14,7 +14,7 @@ import {
 import { IconButton } from 'react-native-paper'
 import * as SecureStore from 'expo-secure-store'
 import { AuthContext } from '../helpers/Utils'
-import {API} from '../navigation/host'
+import {API} from './host'
 
 const AuthStack = createStackNavigator()
 function StackAuth({ navigation }) {
