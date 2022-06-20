@@ -4,10 +4,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import Apptext from './AppText'
 import { theme } from './../core/theme'
 
-const Icontext = ({ name, size, iconColor, text, style }) => {
+const Icontext = ({ name, size, iconColor, text, style , marginLeft }) => {
   return (
     <View style={styles.container}>
-      <MaterialCommunityIcons name={name} size={size} color={iconColor} />
+      <MaterialCommunityIcons name={name} size={size} color={iconColor} marginLeft={marginLeft} />
       <Apptext style={[styles.text, style]}>{text}</Apptext>
     </View>
   )

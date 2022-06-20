@@ -4,7 +4,7 @@ import Background from '../components/Background'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
 import { phoneNumberValidator } from '../helpers/PhoneNumberValidator'
-import {API} from '../navigation/host'
+import { API } from '../navigation/host'
 import * as SecureStore from 'expo-secure-store'
 
 export default function LoginScreen({ navigation }) {
@@ -18,9 +18,9 @@ export default function LoginScreen({ navigation }) {
     }
     try {
       await SecureStore.setItemAsync('phoneNumber', phoneNumber.value)
-      console.log("Phone Number: "+phoneNumber.value)
+      console.log('Phone Number: ' + phoneNumber.value)
     } catch (err) {
-      console.log("Error in Storing Phone Number:"+err)  
+      console.log('Error in Storing Phone Number:' + err)
     }
     //API connection
     var axios = require('axios')

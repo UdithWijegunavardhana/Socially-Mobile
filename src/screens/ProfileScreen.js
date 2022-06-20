@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, SafeAreaView } from 'react-native'
+import { View, StyleSheet, SafeAreaView, Alert } from 'react-native'
 import { theme } from './../core/theme'
 import Button from '../components/Button'
 import { Avatar, Divider } from 'react-native-paper'
@@ -10,18 +10,6 @@ import { AuthContext } from '../helpers/Utils'
 import * as SecureStore from 'expo-secure-store'
 import { API } from '../navigation/host'
 
-// function Stripe() {
-//   return (
-//     <StripeProvider
-//       publishableKey="pk_test_51JvHR3ID7bnBPNMMnJhLGQ6iIb4CSwUPc6YYB0ZDbs6qq32QX3h9TE4X6CeBGNAUtq73gWuXYCTm40GPUdHwIO4E00Eg2iQWf6"
-//       urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
-//       merchantIdentifier="merchant.com.{{YOUR_APP_NAME}}" // required for Apple Pay
-//     >
-//       // Your app code here
-//     </StripeProvider>
-//   )
-// }
-
 const Profilescreen = ({ navigation }) => {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -30,16 +18,15 @@ const Profilescreen = ({ navigation }) => {
     getData()
   }, [])
 
-  const getData = async() => {
-    const host = API.host
-    let userToken = await SecureStore.getItemAsync('userToken') 
-    var axios = require('axios')
+  const getData = async () => {
+    let userToken = await SecureStore.getItemAsync('userToken')
 
+    var axios = require('axios')
     var config = {
       method: 'get',
       url: (API.host+'publisher'),
       headers: {
-        "Authorization":  `Bearer ${userToken}`
+        Authorization: `Bearer ${userToken}`,
       },
     }
 
@@ -50,11 +37,11 @@ const Profilescreen = ({ navigation }) => {
         setPhone(response.data.phoneNumber)
       })
       .catch(function (error) {
-        console.log(error);
-      })    
+        console.log(error)
+      })
   }
-
   const { signOut } = React.useContext(AuthContext)
+
   return (
     <SafeAreaView
       style={{ padding: 5, backgroundColor: theme.colors.white, flex: 1 }}
@@ -102,6 +89,7 @@ const Profilescreen = ({ navigation }) => {
           // disabled={!loading}
           labelStyle={styles.labelStyle}
           onPress={() => navigation.navigate('Paymentsscreen')}
+          // onPress={() => openPaymentSheet()}
         >
           Withdraw
         </Button>

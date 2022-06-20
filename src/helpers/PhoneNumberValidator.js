@@ -1,4 +1,5 @@
 const validPhone = new RegExp(/^[0-9\b]+$/)
+
 export function phoneNumberValidator(phone) {
   if (!phone) return "Phone number can't be empty."
   if (!validPhone.test(phone))
