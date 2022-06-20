@@ -5,7 +5,6 @@ import {
   useStripe,
   useConfirmPayment,
 } from '@stripe/stripe-react-native'
-import { StripeProvider } from '@stripe/stripe-react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { theme } from '../core/theme'
 import { Button, TextInput } from 'react-native-paper'
@@ -14,6 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { nameValidator } from '../helpers/nameValidator'
 
 const PaymentsScreen = ({ navigation }) => {
+  const [card, setCard] = useState({ cardNumber: '', expDate: '', cvc: '' })
   const [cardHolder, setCardHolder] = useState({ value: '', error: '' })
   const [amount, setAmount] = useState({ value: '', error: '' })
   const { confirmPayment, loading } = useConfirmPayment()
@@ -30,29 +30,17 @@ const PaymentsScreen = ({ navigation }) => {
     }
   }
 
-  const fetchPaymentIntentClientSecret = async () => {
-    const response = await fetch(`${API_URL}/create-payment-intent`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        currency: 'usd',
-      }),
-    })
-    const { clientSecret } = await response.json()
-    return clientSecret
-  }
-
   const handlePayPress = async () => {
+    if (!card) {
+      return
+    }
     const billingDetails = {
       email: 'jenny.rosen@example.com',
     }
 
     const clientSecret = await fetchPaymentIntentClientSecret()
-
     const { paymentIntent, error } = await confirmPayment(clientSecret, {
-      paymentMethodType: 'Card',
+      paymentMethodType: 'card',
       paymentMethodData: {
         billingDetails,
       },
@@ -63,6 +51,20 @@ const PaymentsScreen = ({ navigation }) => {
     } else if (paymentIntent) {
       console.log('Success from promise', paymentIntent)
     }
+  }
+
+  const fetchPaymentIntentClientSecret = async () => {
+    const response = await fetch('http://localhost:3000/stripe/charge', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        currency: 'usd',
+      }),
+    })
+    const { clientSecret } = await response.json()
+    return clientSecret
   }
 
   return (
@@ -143,7 +145,7 @@ const PaymentsScreen = ({ navigation }) => {
           marginBottom={70}
           alignSelf={'center'}
           labelStyle={styles.labelStyle}
-          onPress={onConfirmPresed}
+          onPress={handlePayPress}
           disabled={loading}
         >
           Confirm

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, SafeAreaView } from 'react-native'
+import { View, StyleSheet, SafeAreaView, Alert } from 'react-native'
 import { theme } from './../core/theme'
 import Button from '../components/Button'
 import { Avatar, Divider } from 'react-native-paper'
@@ -40,8 +40,8 @@ const Profilescreen = ({ navigation }) => {
         console.log(error)
       })
   }
-
   const { signOut } = React.useContext(AuthContext)
+
   return (
     <SafeAreaView
       style={{ padding: 5, backgroundColor: theme.colors.white, flex: 1 }}
@@ -87,6 +87,7 @@ const Profilescreen = ({ navigation }) => {
           // disabled={!loading}
           labelStyle={styles.labelStyle}
           onPress={() => navigation.navigate('Paymentsscreen')}
+          // onPress={() => openPaymentSheet()}
         >
           Withdraw
         </Button>
