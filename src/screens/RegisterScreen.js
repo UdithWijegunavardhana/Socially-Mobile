@@ -37,7 +37,7 @@ export default function RegisterScreen({ route, navigation }) {
 
     var config = {
       method: 'post',
-      url: API.host + '/auth/publisherRegister',
+      url: (API.host+'auth/publisherRegister'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -51,8 +51,8 @@ export default function RegisterScreen({ route, navigation }) {
       .catch(function (error) {
         console.log(error)
       })
-
-    signUp()
+        
+      signUp()
   }
 
   return (

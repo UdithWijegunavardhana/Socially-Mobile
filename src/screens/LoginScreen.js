@@ -9,9 +9,8 @@ import * as SecureStore from 'expo-secure-store'
 
 export default function LoginScreen({ navigation }) {
   const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
-  const url = API.host + '/auth/phone'
-
-  const onLoginPressed = async () => {
+  const url = API.host+'auth/phone'
+  const onLoginPressed = async() => {
     const phoneNumberError = phoneNumberValidator(phoneNumber.value)
     if (phoneNumberError) {
       setPhoneNumber({ ...phoneNumber, error: phoneNumberError })

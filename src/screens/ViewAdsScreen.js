@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, SafeAreaView, FlatList } from 'react-native'
+import { View, StyleSheet, SafeAreaView, FlatList,RefreshControl } from 'react-native'
 import { filter } from 'lodash'
 import { Searchbar, IconButton, Menu, Divider } from 'react-native-paper'
 import { theme } from './../core/theme'
@@ -11,8 +11,9 @@ import * as SecureStore from 'expo-secure-store'
 export default function ViewAdsScreen({ navigation }) {
   var axios = require('axios')
   const [data, setData] = useState()
-  //const [image, setImage] = useState()
+  const [refreshing, setRefreshing] = React.useState(false);
   const [visible, setVisible] = useState(false)
+  const [fetching,setFetching] = useState(true)
 
    const onShareAd = async(creativeId) =>{
 
@@ -28,7 +29,7 @@ export default function ViewAdsScreen({ navigation }) {
     var data = JSON.stringify({
       "creativeId": "1"
     });
-    const url = (`http://10.0.2.2:3000/share?creative_id=${encodeURIComponent(creativeId)}&user_id=${encodeURIComponent(userId)}&cookie_id=`)
+    const url = (`${API.host}share?creative_id=${encodeURIComponent(creativeId)}&user_id=${encodeURIComponent(userId)}&cookie_id=`)
     var config = {
       method: 'get',
       url,
@@ -51,11 +52,11 @@ export default function ViewAdsScreen({ navigation }) {
   }
 
   useEffect(() => {
-    var config = {
-      method: 'get',
-      url: API.host + '/creative',
-      headers: {},
-    }
+  var config = {
+    method: 'get',
+    url:(API.host+'creative'),
+    headers: {},
+  }
     axios(config)
       .then(function (response) {
         setData(response.data)
@@ -63,7 +64,7 @@ export default function ViewAdsScreen({ navigation }) {
       .catch(function (error) {
         console.log(error)
       })
-  }, [])
+  }, []) 
 
   const openMenu = () => setVisible(true)
   const closeMenu = () => setVisible(false)
@@ -85,9 +86,19 @@ export default function ViewAdsScreen({ navigation }) {
       creativeDescription.toLowerCase().includes(searchQuery)
     ) {
       return true
-    }
+    } 
     return false
   }
+
+  const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setFetching(false)
+    wait(2000).then(() => setRefreshing(false),  console.log(fetching));
+  }, []);
 
   return (
     <SafeAreaView style={{ padding: 5, backgroundColor: theme.colors.white }}>
@@ -136,6 +147,12 @@ export default function ViewAdsScreen({ navigation }) {
             onPress = {() => {onShareAd(item.creativeId)}}
           />
         )}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
       />
     </SafeAreaView>
   )

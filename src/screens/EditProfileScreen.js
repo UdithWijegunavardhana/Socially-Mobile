@@ -14,21 +14,13 @@ import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../components/Button'
 import { nameValidator } from './../helpers/nameValidator'
 import * as SecureStore from 'expo-secure-store'
-import { API } from '../navigation/host'
+import {API} from '../navigation/host'
+import Apptext from '../components/AppText'
 
 const Editprofilescreen = () => {
   const [name, setName] = useState({ value: '', error: '' })
-  const renderInner = () => <Text>Hello</Text>
-  const url = API.host
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle}></View>
-      </View>
-    </View>
-  )
-
-  const onSubmit = async () => {
+  const [status,setStatus] = useState('')
+  const onSubmit = async() => {
     const nameError = nameValidator(name.value)
     if (nameError) {
       setName({ ...name, error: nameError })
@@ -42,7 +34,7 @@ const Editprofilescreen = () => {
 
     var config = {
       method: 'put',
-      url: API.host + '/publisher/update',
+      url: (API.host+'publisher/update'),
       headers: {
         Authorization: `Bearer ${userToken}`,
         'Content-Type': 'application/json',
@@ -52,71 +44,23 @@ const Editprofilescreen = () => {
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data))
+        console.log(response.data.userName)
+        let newName = (JSON.stringify(response.data.userName))
+        setName({ name:newName, error:'' })
+        if(newName){
+          setStatus('Name Updated Successfuly !\n Your new username is :\n'+newName)
+        }
       })
       .catch(function (error) {
         console.log(error)
       })
   }
 
-  let bs = React.createRef()
-  let fall = new Animated.Value(1)
   return (
     <SafeAreaView style={styles.container}>
-      <BottomSheet
-        ref={bs}
-        snapPoints={[330, 0]}
-        renderContent={renderInner}
-        renderHeader={renderHeader}
-        initialSnap={1}
-        callbackNode={fall}
-        enabledGestureInteraction={true}
-      />
+    
       <View style={{ margin: 20 }}>
         <View style={{ alignItems: 'center' }}>
-          <TouchableOpacity
-            onPress={() => {
-              bs.current.snapTo(0)
-            }}
-          >
-            <View
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 15,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <ImageBackground
-                source={require('../assets/avatar.jpg')}
-                style={{ height: 100, width: 100 }}
-                imageStyle={{ borderRadius: 50 }}
-              >
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name={'camera'}
-                    size={35}
-                    color="#fff"
-                    style={{
-                      opacity: 0.7,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderWidth: 1,
-                      borderColor: '#fff',
-                      borderRadius: 10,
-                    }}
-                  />
-                </View>
-              </ImageBackground>
-            </View>
-          </TouchableOpacity>
           <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>
             {name.value}
           </Text>
@@ -132,6 +76,9 @@ const Editprofilescreen = () => {
         <Button mode="contained" onPress={onSubmit}>
           Submit
         </Button>
+      </View>
+      <View>
+        <Apptext style={{fontSize:25,fontWeight:"700"}}>{status}</Apptext>
       </View>
     </SafeAreaView>
   )
