@@ -4,7 +4,7 @@ import { CardField, useStripe , useConfirmPayment } from '@stripe/stripe-react-n
 import { StripeProvider } from '@stripe/stripe-react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { theme } from '../core/theme'
-import { Button, Switch } from 'react-native-paper'
+import { Button } from 'react-native-paper'
 import Apptext from '../components/AppText'
 import TextInput from '../components/TextInput'
 

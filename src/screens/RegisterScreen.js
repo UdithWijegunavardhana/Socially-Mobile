@@ -21,7 +21,7 @@ export default function RegisterScreen({ route, navigation }) {
       setName({ ...name, error: nameError })
       return
     }
-    let phoneNumber;
+    let phoneNumber
     try {
       phoneNumber = await SecureStore.getItemAsync('phoneNumber')
     } catch (e) {
@@ -29,8 +29,8 @@ export default function RegisterScreen({ route, navigation }) {
     }
 
     //API connection
-      var axios = require('axios')
-      var data = JSON.stringify({
+    var axios = require('axios')
+    var data = JSON.stringify({
       userName: name.value,
       phoneNumber: phoneNumber,
     })
@@ -46,7 +46,7 @@ export default function RegisterScreen({ route, navigation }) {
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data) )
+        console.log(JSON.stringify(response.data))
       })
       .catch(function (error) {
         console.log(error)

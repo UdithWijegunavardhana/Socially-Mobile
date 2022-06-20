@@ -26,7 +26,7 @@ const Editprofilescreen = () => {
       setName({ ...name, error: nameError })
       return
     }
-    let userToken = await SecureStore.getItemAsync('userToken') 
+    let userToken = await SecureStore.getItemAsync('userToken')
     var axios = require('axios')
     var data = JSON.stringify({
       userName: name.value,
@@ -36,7 +36,7 @@ const Editprofilescreen = () => {
       method: 'put',
       url: (API.host+'publisher/update'),
       headers: {
-        'Authorization':`Bearer ${userToken}`,
+        Authorization: `Bearer ${userToken}`,
         'Content-Type': 'application/json',
       },
       data: data,
