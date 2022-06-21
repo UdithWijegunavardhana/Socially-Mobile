@@ -25,28 +25,28 @@ export default function ViewAdsScreen({ navigation }) {
         console.log(e)
       }
 
-    var axios = require('axios')
-    var data = JSON.stringify({
-      "creativeId": "1"
-    });
+    // var axios = require('axios')
+    // var data = JSON.stringify({
+    //   "creativeId": "1"
+    // });
     const url = (`${API.host}share?creative_id=${encodeURIComponent(creativeId)}&user_id=${encodeURIComponent(userId)}&cookie_id=`)
-    var config = {
-      method: 'get',
-      url,
-      headers: { 
-        'Authorization': `Bearer ${userToken}`
-      },
-      data: data,
-    }
+    // var config = {
+    //   method: 'get',
+    //   url,
+    //   headers: { 
+    //     'Authorization': `Bearer ${userToken}`
+    //   },
+    //   data: data,
+    // }
 
-    axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-    console.log(creativeId)
+    // axios(config)
+    // .then(function (response) {
+    //   console.log(JSON.stringify(response.data));
+    // })
+    // .catch(function (error) {
+    //   console.log(error);
+    // });
+    // console.log(creativeId)
 
     onShare('My App', 'Hello check this amazing discount!', url)
   }

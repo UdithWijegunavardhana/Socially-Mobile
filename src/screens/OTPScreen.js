@@ -14,6 +14,7 @@ export default function OTPScreen({ route, navigation }) {
   const { signIn } = React.useContext(AuthContext)
 
   function onLoginPressed() {
+    // const otp = otpInput.parseInt()
     signIn({ phoneNumber, otpInput })
   }
 
