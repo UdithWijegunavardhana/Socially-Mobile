@@ -5,17 +5,46 @@ import OTPTextView from 'react-native-otp-textinput'
 import Background from '../components/Background'
 import { theme } from '../core/theme'
 import { AuthContext } from '../helpers/Utils'
+import {API} from '../navigation/host'
+import Apptext from '../components/AppText'
 
 export default function OTPScreen({ route, navigation }) {
   const [otpInput, setOtpInput] = useState('')
   const [err, setErr] = useState('')
+  const [isOtpSent,setIsOtpSent] = useState()
 
   const { phoneNumber } = route.params
   const { signIn } = React.useContext(AuthContext)
 
   function onLoginPressed() {
-    // const otp = otpInput.parseInt()
     signIn({ phoneNumber, otpInput })
+  }
+  function resentOtp(){
+    var axios = require('axios')
+    var data = JSON.stringify({
+      phoneNumber: phoneNumber,
+    })
+
+    var config = {
+      method: 'post',
+      url:API.host+'auth/phone',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data,
+    }
+
+    axios(config)
+      .then(function (response) {
+        let IsOtpSend = JSON.stringify(response.data.IsOtpSend)
+        if(IsOtpSend){
+          setIsOtpSent('Otp Sent Your Mobile Number')
+        }
+        console.log('OTP send : ' + IsOtpSend)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
   }
 
   return (
@@ -34,10 +63,10 @@ export default function OTPScreen({ route, navigation }) {
           keyboardType="default"
         />
         <Text style={styles.errMessage}>{err}</Text>
-
+        {isOtpSent && <Apptext style={{backgroundColor:'rgba(18, 62, 166,0.3)', padding:5, borderRadius:3}}>{isOtpSent}</Apptext>}
         <View style={styles.buttonWrapper}>
           <Text style={styles.textNearButton}> Didn't receive a code ? </Text>
-          <PaperButton style={styles.buttonStyle} mode="text" uppercase={false}>
+          <PaperButton style={styles.buttonStyle} mode="text" uppercase={false} onPress={resentOtp}>
             Resend OTP
           </PaperButton>
         </View>

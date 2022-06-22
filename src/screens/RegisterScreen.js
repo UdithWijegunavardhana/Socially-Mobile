@@ -77,12 +77,12 @@ export default function RegisterScreen({ route, navigation }) {
         Create Account
       </Button>
 
-      <View style={styles.row}>
+      {/* <View style={styles.row}>
         <Text>Already have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
           <Text style={styles.link}>Login</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </Background>
   )
 }

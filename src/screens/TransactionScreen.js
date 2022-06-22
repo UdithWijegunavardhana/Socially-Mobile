@@ -12,7 +12,7 @@ const TransactionScreen = ({ navigation }) => {
   useEffect(() => {
     var config = {
       method: 'get',
-      url: API.host + '/publisher-transaction',
+      url: API.host + 'publisher-transaction',
       headers: {},
     }
     axios(config)
@@ -30,10 +30,15 @@ const TransactionScreen = ({ navigation }) => {
         <FlatList
           data={data}
           keyExtractor={(data) => data.id.toString()}
+          style={{
+            shadowColor: theme.colors.medium,
+            shadowOpacity: 0.8,
+            shadowOffset: { height: 5, width: 3 },
+          }}
           renderItem={({ item }) => (
             <AppList
               amount={item.amount}
-              date={item.date}
+              // date={item.date}
               time={item.time}
               Type={item.type}
             />
