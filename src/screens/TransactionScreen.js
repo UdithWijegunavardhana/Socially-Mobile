@@ -6,9 +6,8 @@ import AppList from '../components/List'
 import { API } from '../navigation/host'
 import * as SecureStore from 'expo-secure-store'
 
-const TransactionScreen = ({route, navigation }) => {
+const TransactionScreen = ({ navigation }) => {
   const [data, setData] = useState()
-  const { amount } = route.params;
   const axios = require('axios')
   useEffect(() => {
     getData();
