@@ -114,7 +114,6 @@ function StackApp({ navigation }) {
           title: 'Contact Us ',
         })}
       />
-      
     </AppStack.Navigator>
   )
 }
@@ -122,8 +121,7 @@ function StackApp({ navigation }) {
 const Stack = createStackNavigator()
 
 export default function NavStack({ navigation }) {
-
-  const[otpError, setOtpError] = useState('')
+  const [otpError, setOtpError] = useState('')
 
   const authContext = React.useMemo(
     () => ({
@@ -136,7 +134,7 @@ export default function NavStack({ navigation }) {
 
         var config = {
           method: 'post',
-          url: (API.host+'auth/otp'),
+          url: API.host + 'auth/otp',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -147,20 +145,22 @@ export default function NavStack({ navigation }) {
             let userToken = response.data.accessToken
             let isNewUser = response.data.isNewUser
             let id = response.data.id
-              try {
-                await SecureStore.setItemAsync('userToken', userToken)
-                await SecureStore.setItemAsync('userId',id.toString())
-                console.log("User Token : "+userToken)
-              } catch (err) {
-                console.log("Error in Storing :"+err)  
-              }
-              dispatch({ type: 'SIGN_IN', token:userToken,isNewUser:isNewUser  })
-            
+            try {
+              await SecureStore.setItemAsync('userToken', userToken)
+              await SecureStore.setItemAsync('userId', id.toString())
+              console.log('User Token : ' + userToken)
+            } catch (err) {
+              console.log('Error in Storing :' + err)
+            }
+            dispatch({
+              type: 'SIGN_IN',
+              token: userToken,
+              isNewUser: isNewUser,
+            })
           })
           .catch(function (error) {
             let Err = error
             console.log(Err)
-            
           })
       },
       signOut: async () => {

@@ -1,7 +1,10 @@
 import { Platform } from 'react-native'
 
-export const API ={
-   host :  Platform.OS == 'android' ? 'https://uom-socially-api.herokuapp.com/':'http://localhost:3000/'
+export const API = {
+  host:
+    Platform.OS == 'android'
+      ? 'https://uom-socially-api.herokuapp.com/'
+      : 'https://uom-socially-api.herokuapp.com/',
 }
 
 // uom-socially-api.herokuapp.com
