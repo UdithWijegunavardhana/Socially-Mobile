@@ -38,8 +38,8 @@ const TransactionScreen = ({ navigation }) => {
           renderItem={({ item }) => (
             <AppList
               amount={item.amount}
-              // date={item.date}
-              time={item.time}
+              date={item.date}
+              // time={item.time}
               Type={item.type}
             />
           )}
