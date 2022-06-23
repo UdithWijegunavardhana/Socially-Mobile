@@ -32,15 +32,13 @@ const PaymentsScreen = ({ navigation }) => {
     //   return
     // }
     
-    const date = new Date()
-    const time = date.toLocaleTimeString()
-    console.log('amount : ', text , date , time)  
+    const date = new Date().toLocaleString()
+    console.log('amount : ', text , date )  
 
     var axios = require('axios');
     var data = JSON.stringify({
       "amount": text,
       "date": date,
-      // "time": time,
       "type": "withdrawal",
     });
 
@@ -108,13 +106,13 @@ const PaymentsScreen = ({ navigation }) => {
           source={require('../assets/DebitCard5.png')}
           style={styles.cardImage}
         />
-        <View style={styles.amountSection}>
+        {/* <View style={styles.amountSection}>
           <Apptext style={styles.text}>Current Amount </Apptext>
           <View style={{ flexDirection: 'row' }}>
             <Apptext children="US$" style={styles.amountStyle} />
             <Apptext children=" 230.00" style={styles.amountStyle} />
           </View>
-        </View>
+        </View> */}
       </View>
 
       <View style={{ backgroundColor: 'white' }}>
