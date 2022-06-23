@@ -6,5 +6,3 @@ export const API = {
       ? 'https://uom-socially-api.herokuapp.com/'
       : 'https://uom-socially-api.herokuapp.com/',
 }
-
-// uom-socially-api.herokuapp.com

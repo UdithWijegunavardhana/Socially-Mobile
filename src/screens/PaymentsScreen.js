@@ -11,55 +11,49 @@ import { Button, TextInput } from 'react-native-paper'
 import Apptext from '../components/AppText'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { API } from '../navigation/host'
+import { nameValidator } from '../helpers/nameValidator'
 import * as SecureStore from 'expo-secure-store'
 
-const PaymentsScreen = ({ navigation }) => {
+const PaymentsScreen = ({ route , navigation }) => {
   const [card, setCard] = useState({ cardNumber: '', expDate: '', cvc: '' })
   const [cardHolder, setCardHolder] = useState({ value: '', error: '' })
   const { confirmPayment, loading } = useConfirmPayment()
-  const [text, setText] = React.useState('')
+  const [text, setText] = React.useState("");
+  const [amountError, setAmountError] = React.useState();
+  const { amount } = route.params;
 
   async function onConfirmPresed() {
     let userToken = await SecureStore.getItemAsync('userToken')
-    // const cardHolderError = nameValidator(cardHolder.value)
-    // if (cardHolderError) {
-    //   setCardHolder({ ...cardHolder, error: cardHolderError })
-    //   return
-    // }
-    // if (amount.value === '' && amount.error <= 10) {
-    //   setAmount({ ...amount, error: 'Please enter an amount' })
-    //   return
-    // }
 
-    const date = new Date()
-    const time = date.toLocaleTimeString()
-    console.log('amount : ', text, date, time)
+    if(text>amount){
+      setAmountError("Amount must be greater than or equal to $ "+amount)
+    } else {
+      const date = new Date().toLocaleString()
 
-    var axios = require('axios')
-    var data = JSON.stringify({
-      amount: text,
-      date: date,
-      time: time,
-      type: 'withdrawal',
-    })
+      var axios = require('axios');
+      var data = JSON.stringify({
+        "amount": text,
+        "date": date,
+        "type": "withdrawal",
+      });
 
-    var config = {
-      method: 'post',
-      url: API.host + 'publisher-transaction/create',
-      headers: {
-        // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA3NzE0MDYwMTEiLCJpZCI6MSwiaWF0IjoxNjU1OTAxMTEwLCJleHAiOjE2NTU5ODc1MTB9.DnzNw-y8mSyK-0a3JgbJIyHqXx8I4-GXIQLu6-VufLc',
-        Authorization: `Bearer ${userToken}`,
-        'Content-Type': 'application/json',
-      },
-      data: data,
-    }
-    axios(config)
+      var config = {
+          method: 'post',
+          url:  API.host+'publisher-transaction/withdraw',
+          headers: { 
+              Authorization: `Bearer ${userToken}`,
+              'Content-Type': 'application/json'
+          },
+          data : data
+      };
+      axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data))
+          console.log(JSON.stringify(response.data));
       })
       .catch(function (error) {
-        console.log(error)
-      })
+          console.log(error);
+      });
+    }
   }
 
   const handlePayPress = async () => {
@@ -111,7 +105,7 @@ const PaymentsScreen = ({ navigation }) => {
           <Apptext style={styles.text}>Current Amount </Apptext>
           <View style={{ flexDirection: 'row' }}>
             <Apptext children="US$" style={styles.amountStyle} />
-            <Apptext children=" 230.00" style={styles.amountStyle} />
+            <Apptext children={amount} style={styles.amountStyle} />
           </View>
         </View>
       </View>
@@ -161,14 +155,19 @@ const PaymentsScreen = ({ navigation }) => {
         <View
           style={{ flexDirection: 'row', marginLeft: '8%', marginBottom: 25 }}
         >
-          <MaterialCommunityIcons
+          {/* <MaterialCommunityIcons
             name="information-outline"
             size={15}
             color={theme.colors.medium}
           />
           <Text style={{ color: theme.colors.medium, marginLeft: 6 }}>
             Minimun withdrawal amount : $10
-          </Text>
+          </Text> */}
+
+          { amountError ? (
+            <Text style={{ color: theme.colors.error, marginLeft: 6 }}>Amount must be greater than or equal to {amount}</Text>
+          ) : null}
+          {/* {errorText ? <Text style={styles.error}>{errorText}</Text> : null} */}
         </View>
 
         <Button
