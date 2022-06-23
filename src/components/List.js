@@ -28,7 +28,7 @@ const AppList = ({ amount, date, time, Type }) => {
         <Card.Content style={styles.content}>
           <View style={styles.amountType}>
             <Title style={styles.title} titleNumberOfLines={1}>
-              {amount}
+              ${amount}
             </Title>
             <Title style={styles.transactionType} titleNumberOfLines={1}>
               {Type}
@@ -55,6 +55,10 @@ const styles = StyleSheet.create({
   },
   Card: {
     marginHorizontal: 5,
+    borderBottomColor:theme.colors.medium,
+    borderBottomWidth:1,
+    marginVertical:7,
+    borderRadius:8
   },
   title: {
     fontSize: 16,
