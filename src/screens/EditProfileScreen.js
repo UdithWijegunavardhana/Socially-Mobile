@@ -9,8 +9,6 @@ import {
 } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import TextInput from '../components/TextInput'
-import Animated from 'react-native-reanimated'
-import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../components/Button'
 import { nameValidator } from './../helpers/nameValidator'
 import * as SecureStore from 'expo-secure-store'

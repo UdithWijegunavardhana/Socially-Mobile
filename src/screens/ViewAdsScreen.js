@@ -12,8 +12,6 @@ export default function ViewAdsScreen({ navigation }) {
   var axios = require('axios')
   const [data, setData] = useState()
   const [refreshing, setRefreshing] = React.useState(false);
-  const [visible, setVisible] = useState(false)
-  const [fetching,setFetching] = useState(true)
 
    const onShareAd = async(creativeId) =>{
 
@@ -25,28 +23,28 @@ export default function ViewAdsScreen({ navigation }) {
         console.log(e)
       }
 
-    var axios = require('axios')
-    var data = JSON.stringify({
-      "creativeId": "1"
-    });
+    // var axios = require('axios')
+    // var data = JSON.stringify({
+    //   "creativeId": "1"
+    // });
     const url = (`${API.host}share?creative_id=${encodeURIComponent(creativeId)}&user_id=${encodeURIComponent(userId)}&cookie_id=`)
-    var config = {
-      method: 'get',
-      url,
-      headers: { 
-        'Authorization': `Bearer ${userToken}`
-      },
-      data: data,
-    }
+    // var config = {
+    //   method: 'get',
+    //   url,
+    //   headers: { 
+    //     'Authorization': `Bearer ${userToken}`
+    //   },
+    //   data: data,
+    // }
 
-    axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-    console.log(creativeId)
+    // axios(config)
+    // .then(function (response) {
+    //   console.log(JSON.stringify(response.data));
+    // })
+    // .catch(function (error) {
+    //   console.log(error);
+    // });
+    // console.log(creativeId)
 
     onShare('My App', 'Hello check this amazing discount!', url)
   }
@@ -64,10 +62,8 @@ export default function ViewAdsScreen({ navigation }) {
       .catch(function (error) {
         console.log(error)
       })
-  }, []) 
+  }, [refreshing]) 
 
-  const openMenu = () => setVisible(true)
-  const closeMenu = () => setVisible(false)
   const onChangeSearch = (searchQuery) => {
     if (searchQuery) {
       const formatedData = searchQuery.toLowerCase()
@@ -96,8 +92,7 @@ export default function ViewAdsScreen({ navigation }) {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setFetching(false)
-    wait(2000).then(() => setRefreshing(false),  console.log(fetching));
+    wait(2000).then(() => setRefreshing(false));
   }, []);
 
   return (
@@ -143,7 +138,7 @@ export default function ViewAdsScreen({ navigation }) {
             image={item.image}
             title={item.creativeHeading}
             description={item.creativeDescription}
-            paymentInformation={'$ ' + item.costPerSale + ' / Per Sale'}
+            paymentInformation={'$ ' + item.costPerSale + ' / Per Conversion'}
             onPress = {() => {onShareAd(item.creativeId)}}
           />
         )}

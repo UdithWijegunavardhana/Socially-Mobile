@@ -13,7 +13,7 @@ import { API } from '../navigation/host'
 const Profilescreen = ({ navigation }) => {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
-
+  const [amount,setAmount] = useState('')
   useEffect(() => {
     getData()
   }, [])
@@ -22,7 +22,7 @@ const Profilescreen = ({ navigation }) => {
     let userToken = await SecureStore.getItemAsync('userToken')
 
     var axios = require('axios')
-    var config = {
+    var config1 = {
       method: 'get',
       url: (API.host+'publisher'),
       headers: {
@@ -30,7 +30,15 @@ const Profilescreen = ({ navigation }) => {
       },
     }
 
-    axios(config)
+    var config2 = {
+      method: 'get',
+      url: (API.host+'publisher-transaction/balance'),
+      headers: { 
+        'Authorization': `Bearer ${userToken}`
+      }
+    };
+
+    axios(config1)
       .then(function (response) {
         const data = JSON.stringify(response.data)
         setName(response.data.name)
@@ -39,6 +47,14 @@ const Profilescreen = ({ navigation }) => {
       .catch(function (error) {
         console.log(error)
       })
+
+    axios(config2)
+      .then(function (response) {
+        setAmount(response.data.amount)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
   const { signOut } = React.useContext(AuthContext)
 
@@ -81,7 +97,8 @@ const Profilescreen = ({ navigation }) => {
         />
         <View style={{ flexDirection: 'row' }}>
           <Apptext children="US$" style={styles.amount} />
-          <Apptext children="230.00" style={styles.amount} />
+          
+          {amount==0 ? <Apptext children='0.00' style={styles.amount} />:<Apptext children={`${amount}.00 `} style={styles.amount} />}
         </View>
         <Button
           mode="contained"
@@ -95,7 +112,8 @@ const Profilescreen = ({ navigation }) => {
         </Button>
       </View>
       <View style={styles.navigationSection}>
-        <Icontextbutton name="help-circle" title="Help" buttonStyle={{borderBottomColor:theme.colors.medium,borderBottomWidth:1,borderTopColor:theme.colors.medium,borderTopWidth:1}}/>
+        <Icontextbutton name="contacts" title="ContactUs" buttonStyle={{borderBottomColor:theme.colors.medium,borderBottomWidth:1,borderTopColor:theme.colors.medium,borderTopWidth:1}}
+         onPress={() => navigation.navigate('ContactScreen')}/>
         <Icontextbutton
           name="bank-transfer"
           title="View Transactions"

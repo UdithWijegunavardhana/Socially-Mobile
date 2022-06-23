@@ -10,7 +10,7 @@ import {
   Editprofilescreen,
   Paymentsscreen,
   TransactionScreen,
-  HelpScreen,
+  ContactScreen,
 } from '../screens'
 import { IconButton } from 'react-native-paper'
 import * as SecureStore from 'expo-secure-store'
@@ -108,12 +108,13 @@ function StackApp({ navigation }) {
         })}
       />
       <AppStack.Screen
-        name="HelpScreen"
-        component={HelpScreen}
+        name="ContactScreen"
+        component={ContactScreen}
         options={({ navigation }) => ({
-          title: 'Help',
+          title: 'Contact Us ',
         })}
       />
+      
     </AppStack.Navigator>
   )
 }

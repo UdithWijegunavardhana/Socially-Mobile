@@ -34,11 +34,16 @@ const TransactionScreen = ({ navigation }) => {
         <FlatList
           data={data}
           keyExtractor={(data) => data.id.toString()}
+          style={{
+            shadowColor: theme.colors.medium,
+            shadowOpacity: 0.8,
+            shadowOffset: { height: 5, width: 3 },
+          }}
           renderItem={({ item }) => (
             <AppList
               amount={'$ ' + item.amount}
               date={item.date}
-              time={item.time}
+              // time={item.time}
               Type={item.type}
             />
           )}
