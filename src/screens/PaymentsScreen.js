@@ -10,24 +10,56 @@ import { theme } from '../core/theme'
 import { Button, TextInput } from 'react-native-paper'
 import Apptext from '../components/AppText'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { API } from '../navigation/host'
 import { nameValidator } from '../helpers/nameValidator'
 
 const PaymentsScreen = ({ navigation }) => {
   const [card, setCard] = useState({ cardNumber: '', expDate: '', cvc: '' })
   const [cardHolder, setCardHolder] = useState({ value: '', error: '' })
-  const [amount, setAmount] = useState({ value: '', error: '' })
   const { confirmPayment, loading } = useConfirmPayment()
+  const [text, setText] = React.useState("");
 
   async function onConfirmPresed() {
-    const cardHolderError = nameValidator(cardHolder.value)
-    if (cardHolderError) {
-      setCardHolder({ ...cardHolder, error: cardHolderError })
-      return
-    }
-    if (amount.value === '' && amount.error <= 10) {
-      setAmount({ ...amount, error: 'Please enter an amount' })
-      return
-    }
+    let userToken = SecureStore.getItemAsync('userToken')
+    // const cardHolderError = nameValidator(cardHolder.value)
+    // if (cardHolderError) {
+    //   setCardHolder({ ...cardHolder, error: cardHolderError })
+    //   return
+    // }
+    // if (amount.value === '' && amount.error <= 10) {
+    //   setAmount({ ...amount, error: 'Please enter an amount' })
+    //   return
+    // }
+    
+    const date = new Date()
+    const time = date.toLocaleTimeString()
+    console.log('amount : ', text , date , time)  
+
+    var axios = require('axios');
+    var data = JSON.stringify({
+      "amount": text,
+      "date": date,
+      "time": time,
+      "type": "withdrawal",
+    });
+
+    var config = {
+        method: 'post',
+        url:  API.host+'publisher-transaction/create',
+        headers: { 
+            Authorization: `Bearer ${userToken}`,
+            'Content-Type': 'application/json'
+        },
+        data : data
+    };
+    axios(config)
+    .then(function (response) {
+        console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
   }
 
   const handlePayPress = async () => {
@@ -61,6 +93,7 @@ const PaymentsScreen = ({ navigation }) => {
       },
       body: JSON.stringify({
         currency: 'usd',
+        paymentMethodType: 'card',
       }),
     })
     const { clientSecret } = await response.json()
@@ -77,8 +110,8 @@ const PaymentsScreen = ({ navigation }) => {
         <View style={styles.amountSection}>
           <Apptext style={styles.text}>Current Amount </Apptext>
           <View style={{ flexDirection: 'row' }}>
-            <Apptext children="US$" style={styles.amount} />
-            <Apptext children=" 230.00" style={styles.amount} />
+            <Apptext children="US$" style={styles.amountStyle} />
+            <Apptext children=" 230.00" style={styles.amountStyle} />
           </View>
         </View>
       </View>
@@ -104,13 +137,14 @@ const PaymentsScreen = ({ navigation }) => {
         <View style={styles.inputContainer}>
           <TextInput
             label="amount  $"
+            onChangeText={text => setText(text)}
             autoCorrect={false}
             style={styles.amountInput}
             underlineColor={theme.colors.primary}
             backgroundColor={theme.colors.white}
-            onChangeText={(text) => setCardHolder({ value: text, error: '' })}
-            error={!!cardHolder.error}
-            errorText={cardHolder.error}
+
+            // error={!!cardHolder.error}
+            // errorText={cardHolder.error}
           />
           <TextInput
             label="Card Holder"
@@ -118,9 +152,9 @@ const PaymentsScreen = ({ navigation }) => {
             style={styles.cardholderInput}
             underlineColor={theme.colors.primary}
             backgroundColor={theme.colors.white}
-            onChangeText={(text) => setAmount({ value: text, error: '' })}
-            error={!!amount.error}
-            errorText={amount.error}
+            // onChangeText={(text) => setAmount(text)}
+            // error={!!amount.error}
+            // errorText={amount.error}
           />
         </View>
 
@@ -145,7 +179,7 @@ const PaymentsScreen = ({ navigation }) => {
           marginBottom={70}
           alignSelf={'center'}
           labelStyle={styles.labelStyle}
-          onPress={handlePayPress}
+          onPress={onConfirmPresed}
           disabled={loading}
         >
           Confirm
@@ -183,7 +217,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 13,
   },
-  amount: {
+  amountStyle: {
     fontSize: 30,
     color: theme.colors.primary,
     fontWeight: '700',

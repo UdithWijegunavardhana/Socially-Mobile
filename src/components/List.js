@@ -6,7 +6,7 @@ import { theme } from './../core/theme'
 import Apptext from './AppText'
 
 const AppList = ({ amount, date, time, Type }) => {
-  if (Type === 'Withdrawal') {
+  if (Type === 'withdrawal') {
     styles.transactionType = {
       color: theme.colors.error,
       fontSize: 15,

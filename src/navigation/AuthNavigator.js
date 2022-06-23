@@ -122,6 +122,9 @@ function StackApp({ navigation }) {
 const Stack = createStackNavigator()
 
 export default function NavStack({ navigation }) {
+
+  const[otpError, setOtpError] = useState('')
+
   const authContext = React.useMemo(
     () => ({
       signIn: async (data) => {
@@ -155,8 +158,9 @@ export default function NavStack({ navigation }) {
             
           })
           .catch(function (error) {
-            let Err = error.message
+            let Err = error
             console.log(Err)
+            
           })
       },
       signOut: async () => {
@@ -172,7 +176,7 @@ export default function NavStack({ navigation }) {
         try {
           userToken = await SecureStore.getItemAsync('userToken', userToken)
         } catch (err) {
-          console.log(err)
+          console.log(err.message)
         }
         dispatch({ type: 'SIGN_UP', token: userToken })
       },

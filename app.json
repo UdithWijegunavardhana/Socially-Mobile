@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Socially",
+    "name": "Socially ",
     "slug": "Socially",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -28,6 +28,6 @@
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-    "description": ""
+    "description": "connected with hosted backend"
   }
 }
