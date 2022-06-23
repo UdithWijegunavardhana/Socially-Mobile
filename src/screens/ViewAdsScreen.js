@@ -109,7 +109,7 @@ export default function ViewAdsScreen({ navigation }) {
           autoCapitalize="none"
           style={styles.searchBar}
         />
-        <Menu
+        {/* <Menu
           visible={visible}
           onDismiss={closeMenu}
           anchor={
@@ -127,7 +127,7 @@ export default function ViewAdsScreen({ navigation }) {
           <Menu.Item onPress={() => {}} title="Ending soonest" />
           <Divider />
           <Menu.Item onPress={() => {}} title="Newly listed" />
-        </Menu>
+        </Menu> */}
       </View>
       <FlatList
         data={data}

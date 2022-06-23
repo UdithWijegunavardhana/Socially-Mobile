@@ -4,16 +4,20 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { theme } from './../core/theme'
 import AppList from '../components/List'
 import { API } from '../navigation/host'
+import * as SecureStore from 'expo-secure-store'
 
 const TransactionScreen = ({ navigation }) => {
   const [data, setData] = useState()
 
   const axios = require('axios')
   useEffect(() => {
+    let userToken = SecureStore.getItemAsync('userToken')
     var config = {
       method: 'get',
-      url: API.host + '/publisher-transaction',
-      headers: {},
+      url: API.host + 'publisher-transaction/transactionsByPublisherId',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
     }
     axios(config)
       .then(function (response) {
@@ -32,7 +36,7 @@ const TransactionScreen = ({ navigation }) => {
           keyExtractor={(data) => data.id.toString()}
           renderItem={({ item }) => (
             <AppList
-              amount={item.amount}
+              amount={'$ ' + item.amount}
               date={item.date}
               time={item.time}
               Type={item.type}
