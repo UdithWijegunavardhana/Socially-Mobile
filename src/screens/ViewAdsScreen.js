@@ -12,8 +12,6 @@ export default function ViewAdsScreen({ navigation }) {
   var axios = require('axios')
   const [data, setData] = useState()
   const [refreshing, setRefreshing] = React.useState(false);
-  const [visible, setVisible] = useState(false)
-  const [fetching,setFetching] = useState(true)
 
    const onShareAd = async(creativeId) =>{
 
@@ -64,10 +62,8 @@ export default function ViewAdsScreen({ navigation }) {
       .catch(function (error) {
         console.log(error)
       })
-  }, []) 
+  }, [refreshing]) 
 
-  const openMenu = () => setVisible(true)
-  const closeMenu = () => setVisible(false)
   const onChangeSearch = (searchQuery) => {
     if (searchQuery) {
       const formatedData = searchQuery.toLowerCase()
@@ -96,8 +92,7 @@ export default function ViewAdsScreen({ navigation }) {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setFetching(false)
-    wait(2000).then(() => setRefreshing(false),  console.log(fetching));
+    wait(2000).then(() => setRefreshing(false));
   }, []);
 
   return (

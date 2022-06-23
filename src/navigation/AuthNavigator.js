@@ -111,7 +111,7 @@ function StackApp({ navigation }) {
         name="ContactScreen"
         component={ContactScreen}
         options={({ navigation }) => ({
-          title: 'Help',
+          title: 'Contact Us ',
         })}
       />
       

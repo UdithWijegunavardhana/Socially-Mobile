@@ -112,7 +112,7 @@ const Profilescreen = ({ navigation }) => {
         </Button>
       </View>
       <View style={styles.navigationSection}>
-        <Icontextbutton name="help-circle" title="Help" buttonStyle={{borderBottomColor:theme.colors.medium,borderBottomWidth:1,borderTopColor:theme.colors.medium,borderTopWidth:1}}
+        <Icontextbutton name="contacts" title="ContactUs" buttonStyle={{borderBottomColor:theme.colors.medium,borderBottomWidth:1,borderTopColor:theme.colors.medium,borderTopWidth:1}}
          onPress={() => navigation.navigate('ContactScreen')}/>
         <Icontextbutton
           name="bank-transfer"
