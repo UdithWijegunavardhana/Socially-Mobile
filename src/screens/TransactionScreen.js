@@ -11,7 +11,12 @@ const TransactionScreen = ({ navigation }) => {
 
   const axios = require('axios')
   useEffect(() => {
-    let userToken = SecureStore.getItemAsync('userToken')
+    getData();
+  }, [])
+
+  const getData = async()=>{
+    let userToken = await SecureStore.getItemAsync('userToken')
+    console.log(userToken)
     var config = {
       method: 'get',
       url: API.host + 'publisher-transaction/transactionsByPublisherId',
@@ -26,7 +31,7 @@ const TransactionScreen = ({ navigation }) => {
       .catch(function (error) {
         console.log(error)
       })
-  }, [])
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.white }}>
@@ -41,7 +46,7 @@ const TransactionScreen = ({ navigation }) => {
           }}
           renderItem={({ item }) => (
             <AppList
-              amount={'$ ' + item.amount}
+              amount={item.amount}
               date={item.date}
               // time={item.time}
               Type={item.type}

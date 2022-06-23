@@ -12,6 +12,7 @@ import Apptext from '../components/AppText'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { API } from '../navigation/host'
 import { nameValidator } from '../helpers/nameValidator'
+import * as SecureStore from 'expo-secure-store'
 
 const PaymentsScreen = ({ navigation }) => {
   const [card, setCard] = useState({ cardNumber: '', expDate: '', cvc: '' })
@@ -20,7 +21,7 @@ const PaymentsScreen = ({ navigation }) => {
   const [text, setText] = React.useState("");
 
   async function onConfirmPresed() {
-    let userToken = SecureStore.getItemAsync('userToken')
+    let userToken = await SecureStore.getItemAsync('userToken')
     // const cardHolderError = nameValidator(cardHolder.value)
     // if (cardHolderError) {
     //   setCardHolder({ ...cardHolder, error: cardHolderError })
@@ -39,13 +40,13 @@ const PaymentsScreen = ({ navigation }) => {
     var data = JSON.stringify({
       "amount": text,
       "date": date,
-      "time": time,
+      // "time": time,
       "type": "withdrawal",
     });
 
     var config = {
         method: 'post',
-        url:  API.host+'publisher-transaction/create',
+        url:  API.host+'publisher-transaction/withdraw',
         headers: { 
             Authorization: `Bearer ${userToken}`,
             'Content-Type': 'application/json'
