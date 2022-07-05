@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, SafeAreaView, FlatList,RefreshControl } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  RefreshControl,
+} from 'react-native'
 import { filter } from 'lodash'
 import { Searchbar, IconButton, Menu, Divider } from 'react-native-paper'
 import { theme } from './../core/theme'
@@ -11,27 +17,28 @@ import * as SecureStore from 'expo-secure-store'
 export default function ViewAdsScreen({ navigation }) {
   var axios = require('axios')
   const [data, setData] = useState()
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = React.useState(false)
 
-   const onShareAd = async(creativeId) =>{
-
-    let userToken,userId;
-      try{
-        userToken = await SecureStore.getItemAsync('userToken')
-        userId = await SecureStore.getItemAsync('userId')
-      }catch(e){
-        console.log(e)
-      }
+  const onShareAd = async (creativeId) => {
+    let userToken, userId
+    try {
+      userToken = await SecureStore.getItemAsync('userToken')
+      userId = await SecureStore.getItemAsync('userId')
+    } catch (e) {
+      console.log(e)
+    }
 
     // var axios = require('axios')
     // var data = JSON.stringify({
     //   "creativeId": "1"
     // });
-    const url = (`${API.host}share?creative_id=${encodeURIComponent(creativeId)}&user_id=${encodeURIComponent(userId)}&cookie_id=`)
+    const url = `${API.host}share?creative_id=${encodeURIComponent(
+      creativeId
+    )}&user_id=${encodeURIComponent(userId)}&cookie_id=`
     // var config = {
     //   method: 'get',
     //   url,
-    //   headers: { 
+    //   headers: {
     //     'Authorization': `Bearer ${userToken}`
     //   },
     //   data: data,
@@ -50,11 +57,11 @@ export default function ViewAdsScreen({ navigation }) {
   }
 
   useEffect(() => {
-  var config = {
-    method: 'get',
-    url:(API.host+'creative'),
-    headers: {},
-  }
+    var config = {
+      method: 'get',
+      url: API.host + 'creative',
+      headers: {},
+    }
     axios(config)
       .then(function (response) {
         setData(response.data)
@@ -62,7 +69,7 @@ export default function ViewAdsScreen({ navigation }) {
       .catch(function (error) {
         console.log(error)
       })
-  }, [refreshing]) 
+  }, [refreshing])
 
   const onChangeSearch = (searchQuery) => {
     if (searchQuery) {
@@ -82,18 +89,18 @@ export default function ViewAdsScreen({ navigation }) {
       creativeDescription.toLowerCase().includes(searchQuery)
     ) {
       return true
-    } 
+    }
     return false
   }
 
   const wait = (timeout) => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
+    return new Promise((resolve) => setTimeout(resolve, timeout))
   }
 
   const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
-  }, []);
+    setRefreshing(true)
+    wait(2000).then(() => setRefreshing(false))
+  }, [])
 
   return (
     <SafeAreaView style={{ padding: 5, backgroundColor: theme.colors.white }}>
@@ -139,14 +146,13 @@ export default function ViewAdsScreen({ navigation }) {
             title={item.creativeHeading}
             description={item.creativeDescription}
             paymentInformation={'$ ' + item.costPerSale + ' / Per Conversion'}
-            onPress = {() => {onShareAd(item.creativeId)}}
+            onPress={() => {
+              onShareAd(item.creativeId)
+            }}
           />
         )}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
     </SafeAreaView>

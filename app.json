@@ -28,6 +28,6 @@
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-    "description": "connected with hosted backend"
+    "description": ""
   }
 }
