@@ -18,7 +18,8 @@ export default function OTPScreen({ route, navigation }) {
 
   function onLoginPressed() {
     signIn({ phoneNumber, otpInput })
-  }
+  } 
+
   function resentOtp(){
     var axios = require('axios')
     var data = JSON.stringify({

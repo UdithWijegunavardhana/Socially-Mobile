@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, SafeAreaView, Alert } from 'react-native'
+import { View, StyleSheet, SafeAreaView, Alert , Text } from 'react-native'
 import { theme } from './../core/theme'
 import Button from '../components/Button'
 import { Avatar, Divider } from 'react-native-paper'
@@ -9,6 +9,7 @@ import Icontextbutton from '../components/IconTextButton'
 import { AuthContext } from '../helpers/Utils'
 import * as SecureStore from 'expo-secure-store'
 import { API } from '../navigation/host'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 const Profilescreen = ({ navigation }) => {
   const [name, setName] = useState('')
@@ -114,6 +115,16 @@ const Profilescreen = ({ navigation }) => {
         >
           Withdraw
         </Button>
+        <View style={{flexDirection:'row', alignSelf:'center'}}>
+          {/* <MaterialCommunityIcons
+            name="information-outline"
+            size={15}
+            color={theme.colors.medium}
+          /> */}
+          <Text style={{ color: theme.colors.primary, marginLeft: 6 }}>
+            Minimun withdrawal amount : $10
+          </Text>
+        </View>
       </View>
       <View style={styles.navigationSection}>
         <Icontextbutton name="contacts" title="ContactUs" buttonStyle={{borderBottomColor:theme.colors.medium,borderBottomWidth:1,borderTopColor:theme.colors.medium,borderTopWidth:1}}

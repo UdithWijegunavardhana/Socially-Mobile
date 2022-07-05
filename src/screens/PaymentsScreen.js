@@ -26,7 +26,7 @@ const PaymentsScreen = ({ route , navigation }) => {
     let userToken = await SecureStore.getItemAsync('userToken')
 
     if(text>amount){
-      setAmountError("Amount must be greater than or equal to $ "+amount)
+      setAmountError("Amount must be less than or equal to $ " + amount)
     } else {
       const date = new Date().toLocaleString()
 
@@ -36,7 +36,6 @@ const PaymentsScreen = ({ route , navigation }) => {
         "date": date,
         "type": "withdrawal",
       });
-
       var config = {
           method: 'post',
           url:  API.host+'publisher-transaction/withdraw',
@@ -155,19 +154,9 @@ const PaymentsScreen = ({ route , navigation }) => {
         <View
           style={{ flexDirection: 'row', marginLeft: '8%', marginBottom: 25 }}
         >
-          {/* <MaterialCommunityIcons
-            name="information-outline"
-            size={15}
-            color={theme.colors.medium}
-          />
-          <Text style={{ color: theme.colors.medium, marginLeft: 6 }}>
-            Minimun withdrawal amount : $10
-          </Text> */}
-
           { amountError ? (
-            <Text style={{ color: theme.colors.error, marginLeft: 6 }}>Amount must be greater than or equal to {amount}</Text>
+            <Text style={{ color: theme.colors.error, marginLeft: 6 }}>Amount must be less than or equal to {amount}</Text>
           ) : null}
-          {/* {errorText ? <Text style={styles.error}>{errorText}</Text> : null} */}
         </View>
 
         <Button
